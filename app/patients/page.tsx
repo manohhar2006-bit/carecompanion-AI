@@ -1,0 +1,350 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppState, PatientProfile } from "@/context/AppContext";
+import { 
+  UserCheck, 
+  UserPlus, 
+  Trash2, 
+  Clock, 
+  Languages, 
+  Volume2, 
+  ShieldAlert, 
+  Activity, 
+  ChevronRight,
+  ClipboardList,
+  HeartPulse
+} from "lucide-react";
+
+export default function ProfilePage() {
+  const router = useRouter();
+  const { 
+    profiles, 
+    activeProfileId, 
+    selectProfile, 
+    createProfile, 
+    deleteProfile 
+  } = useAppState();
+
+  // Form states for creating a profile
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("Male");
+  const [condition, setCondition] = useState("");
+  const [caregiverName, setCaregiverName] = useState("");
+  const [language, setLanguage] = useState("English");
+  const [reminderStyle, setReminderStyle] = useState<"voice" | "popup" | "both">("both");
+  const [error, setError] = useState("");
+
+  const handleSelect = (id: string) => {
+    selectProfile(id);
+    router.push("/dashboard");
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!name.trim()) {
+      setError("Please enter the patient's full name.");
+      return;
+    }
+    const ageNum = parseInt(age);
+    if (isNaN(ageNum) || ageNum <= 0) {
+      setError("Please enter a valid age.");
+      return;
+    }
+    if (!condition.trim()) {
+      setError("Please describe the patient's medical condition.");
+      return;
+    }
+
+    createProfile({
+      name: name.trim(),
+      age: ageNum,
+      gender,
+      condition: condition.trim(),
+      caregiverName: caregiverName.trim() || "None",
+      language,
+      reminderStyle,
+      doctorName: "Dr. Sarah Alcott", // default clinic provider
+      clinicName: "Metro Health Cardiology Clinic",
+      precautions: "Maintain medication times carefully. Consult doctor for updates.",
+      followUpDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    });
+
+    // Reset form
+    setName("");
+    setAge("");
+    setCondition("");
+    setCaregiverName("");
+    
+    alert("New patient account created! Redirecting to Dashboard...");
+    router.push("/dashboard");
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full space-y-8">
+      {/* Header Banner with Gradient */}
+      <div className="relative overflow-hidden bg-radial from-teal-700 to-teal-900 text-white rounded-3xl p-8 shadow-xl border border-teal-800">
+        <div className="absolute inset-y-0 right-0 w-1/3 bg-teal-600/20 blur-2xl rounded-full translate-x-10"></div>
+        <div className="relative z-10 space-y-3">
+          <span className="text-xs bg-teal-500 text-teal-50 px-3 py-1 rounded-full font-bold uppercase tracking-wide">
+            Access Gate
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Patient Accounts Portal</h1>
+          <p className="text-teal-100 text-sm max-w-xl leading-relaxed">
+            Select an active patient to view their daily adherence schedule, trigger reminders, and generate clinical reports, or register a new patient file.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Side: Select Profile (7 cols) */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+              <UserCheck className="h-5.5 w-5.5 text-teal-600" />
+              Select Active Account
+            </h2>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{profiles.length} Accounts Registered</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {profiles.map((profile) => {
+              const isActive = profile.id === activeProfileId;
+              return (
+                <div 
+                  key={profile.id}
+                  className={`group rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-md relative ${
+                    isActive 
+                      ? "border-teal-500 bg-teal-50/15 ring-2 ring-teal-500/20" 
+                      : "border-slate-200 bg-white hover:border-slate-350"
+                  }`}
+                >
+                  <div className="p-6 space-y-4">
+                    {/* Header */}
+                    <div className="flex justify-between items-start gap-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+                          {profile.name}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-0.5">{profile.gender} • Age {profile.age}</p>
+                      </div>
+                      <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-md ${
+                        isActive 
+                          ? "bg-teal-600 text-white" 
+                          : "bg-slate-100 text-slate-400"
+                      }`}>
+                        {isActive ? "Active" : "Select"}
+                      </span>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="border-t border-b border-slate-100 py-3 space-y-2 text-xs text-slate-600">
+                      <div>
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Medical Condition</span>
+                        <strong className="text-slate-700 block text-xs truncate mt-0.5">{profile.condition}</strong>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Caregiver</span>
+                          <strong className="text-slate-700 mt-0.5 block">{profile.caregiverName}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Alert Style</span>
+                          <strong className="text-slate-700 mt-0.5 block capitalize">{profile.reminderStyle}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 justify-between items-center">
+                      <button
+                        onClick={() => handleSelect(profile.id)}
+                        className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 ${
+                          isActive 
+                            ? "bg-teal-600 text-white hover:bg-teal-700 shadow-xs" 
+                            : "bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700"
+                        }`}
+                      >
+                        <span>Select Profile</span>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </button>
+
+                      {profiles.length > 1 && (
+                        <button
+                          onClick={() => {
+                            if (confirm(`Are you sure you want to delete profile for ${profile.name}? All their prescription logs will be lost.`)) {
+                              deleteProfile(profile.id);
+                            }
+                          }}
+                          className="p-2 text-slate-350 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                          title="Delete Patient Record"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right Side: Create Profile Form (5 cols) */}
+        <div className="lg:col-span-5">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-slate-50 border-b border-slate-200 p-6 flex items-center gap-2.5">
+              <div className="rounded-lg bg-teal-600 text-white p-2">
+                <UserPlus className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-800">Register New Patient</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Create a distinct record for custom schedule configurations.</p>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {error && (
+                <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 font-bold">
+                  ⚠️ {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Full Name */}
+                <div className="space-y-1">
+                  <label htmlFor="fullname" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="fullname"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Mrs. Kamla, Mr. Ramesh"
+                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Age */}
+                  <div className="space-y-1">
+                    <label htmlFor="age" className="block text-[10px] font-bold text-slate-500 uppercase">
+                      Age
+                    </label>
+                    <input
+                      type="number"
+                      id="age"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      placeholder="e.g. 72"
+                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                      required
+                    />
+                  </div>
+
+                  {/* Gender */}
+                  <div className="space-y-1">
+                    <label htmlFor="gender" className="block text-[10px] font-bold text-slate-500 uppercase">
+                      Gender
+                    </label>
+                    <select
+                      id="gender"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Medical Condition */}
+                <div className="space-y-1">
+                  <label htmlFor="condition" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    Medical Condition / Notes
+                  </label>
+                  <input
+                    type="text"
+                    id="condition"
+                    value={condition}
+                    onChange={(e) => setCondition(e.target.value)}
+                    placeholder="e.g. Blood Pressure, Diabetes, Post-op Recovery"
+                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    required
+                  />
+                </div>
+
+                {/* Caregiver Name */}
+                <div className="space-y-1">
+                  <label htmlFor="caregiver" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    Caregiver Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="caregiver"
+                    value={caregiverName}
+                    onChange={(e) => setCaregiverName(e.target.value)}
+                    placeholder="e.g. Anil, Priya"
+                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Language */}
+                  <div className="space-y-1">
+                    <label htmlFor="language" className="block text-[10px] font-bold text-slate-500 uppercase">
+                      Language (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      id="language"
+                      value={language}
+                      onChange={(e) => setLanguage(e.target.value)}
+                      placeholder="e.g. English, Spanish"
+                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    />
+                  </div>
+
+                  {/* Reminder Style */}
+                  <div className="space-y-1">
+                    <label htmlFor="rem-style" className="block text-[10px] font-bold text-slate-500 uppercase">
+                      Reminder Style
+                    </label>
+                    <select
+                      id="rem-style"
+                      value={reminderStyle}
+                      onChange={(e) => setReminderStyle(e.target.value as any)}
+                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden"
+                    >
+                      <option value="both">Both (Voice & Popup)</option>
+                      <option value="voice">Voice Reminder Only</option>
+                      <option value="popup">Popup Alert Only</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-sm hover:shadow-md transition-all text-center flex items-center justify-center gap-1.5"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>Register Patient Account</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
