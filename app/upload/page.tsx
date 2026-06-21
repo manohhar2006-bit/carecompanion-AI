@@ -106,6 +106,17 @@ export default function PrescriptionUploadPage() {
   const router = useRouter();
   const { activeProfile, addMedicines } = useAppState();
 
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processStep, setProcessStep] = useState(0);
+  const [isDone, setIsDone] = useState(false);
+  const [extractedMeds, setExtractedMeds] = useState<ExtractedMed[]>(mockParsedMeds);
+  const [selectedMeds, setSelectedMeds] = useState<number[]>([0, 1, 2]); // default select all
+  const [isImported, setIsImported] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [isEditingTime, setIsEditingTime] = useState<number | null>(null);
+
   if (!activeProfile) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-6">
@@ -127,17 +138,6 @@ export default function PrescriptionUploadPage() {
       </div>
     );
   }
-
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [processStep, setProcessStep] = useState(0);
-  const [isDone, setIsDone] = useState(false);
-  const [extractedMeds, setExtractedMeds] = useState<ExtractedMed[]>(mockParsedMeds);
-  const [selectedMeds, setSelectedMeds] = useState<number[]>([0, 1, 2]); // default select all
-  const [isImported, setIsImported] = useState(false);
-  const [scanError, setScanError] = useState<string | null>(null);
-  const [isEditingTime, setIsEditingTime] = useState<number | null>(null);
 
   const processingSteps = [
     "Analyzing image contours and layout...",

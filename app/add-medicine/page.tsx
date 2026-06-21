@@ -15,28 +15,6 @@ function AddMedicineForm() {
   const { activeProfile, addMedicine, updateMedicine, allMedicines } = useAppState();
   const medicineToEdit = allMedicines.find(m => m.id === editId);
 
-  if (!activeProfile) {
-    return (
-      <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-6">
-        <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-sm">
-          <Clock className="h-8 w-8" />
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-800 text-sm leading-relaxed">
-            Please select an existing patient file or register a new one to log prescriptions.
-          </p>
-        </div>
-        <Link
-          href="/patients"
-          className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-teal-600 hover:bg-teal-700 shadow-md transition-all"
-        >
-          Go to Patients Portal
-        </Link>
-      </div>
-    );
-  }
-
   // Form states
   const [name, setName] = useState("");
   const [dosage, setDosage] = useState("");
@@ -86,6 +64,28 @@ function AddMedicineForm() {
       ]);
     }
   }, [medicineToEdit]);
+
+  if (!activeProfile) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-6">
+        <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-sm">
+          <Clock className="h-8 w-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
+          <p className="text-slate-800 text-sm leading-relaxed">
+            Please select an existing patient file or register a new one to log prescriptions.
+          </p>
+        </div>
+        <Link
+          href="/patients"
+          className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-teal-600 hover:bg-teal-700 shadow-md transition-all"
+        >
+          Go to Patients Portal
+        </Link>
+      </div>
+    );
+  }
 
   // Adjust time input automatically when routine slot changes
   const handleSlotChange = (slot: "morning" | "afternoon" | "evening" | "night") => {

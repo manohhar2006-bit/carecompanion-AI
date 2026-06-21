@@ -203,9 +203,17 @@ export default function VoiceRemindersPage() {
 
   const triggerSimulation = () => {
     const pendingDoses = todayDoses.filter(d => d.status === "pending");
-    const target = pendingDoses.length > 0 
-      ? pendingDoses[Math.floor(Math.random() * pendingDoses.length)]
-      : todayDoses[0]; 
+    let target = todayDoses[0];
+    
+    if (pendingDoses.length > 0) {
+      if (typeof window !== "undefined" && window.crypto) {
+        const randomArray = new Uint32Array(1);
+        window.crypto.getRandomValues(randomArray);
+        target = pendingDoses[randomArray[0] % pendingDoses.length];
+      } else {
+        target = pendingDoses[0];
+      }
+    }
 
     if (!target) {
       alert("Please log at least one medicine first!");
