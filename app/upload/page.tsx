@@ -25,6 +25,14 @@ interface ExtractedMed {
   exactTime: string;
   duration: number;
   notes: string;
+  reminderStatus?: string;
+  originalOcrData?: {
+    name?: string;
+    dosage?: string;
+    exactTime?: string;
+    duration?: number;
+    notes?: string;
+  };
 }
 
 const mockParsedMeds: ExtractedMed[] = [
@@ -37,6 +45,14 @@ const mockParsedMeds: ExtractedMed[] = [
     exactTime: "21:00",
     duration: 30,
     notes: "Take before bedtime",
+    reminderStatus: "Scheduled",
+    originalOcrData: {
+      name: "Atorvastatin (Cholesterol tablet)",
+      dosage: "10mg",
+      exactTime: "21:00",
+      duration: 30,
+      notes: "Take before bedtime"
+    }
   },
   {
     id: "ext-med-levothyroxine",
@@ -47,8 +63,44 @@ const mockParsedMeds: ExtractedMed[] = [
     exactTime: "07:00",
     duration: 90,
     notes: "Take on an empty stomach, 30 mins before breakfast",
+    reminderStatus: "Scheduled",
+    originalOcrData: {
+      name: "Levothyroxine (Thyroid tablet)",
+      dosage: "50mcg",
+      exactTime: "07:00",
+      duration: 90,
+      notes: "Take on an empty stomach, 30 mins before breakfast"
+    }
   },
+  {
+    id: "ext-med-augmentin",
+    name: "Augmentin",
+    dosage: "625mg",
+    frequency: "Three times daily",
+    timeOfDay: ["morning", "afternoon", "night"],
+    exactTime: "00:00",
+    duration: 5,
+    notes: "after meals",
+    reminderStatus: "Needs Time",
+    originalOcrData: {
+      name: "Augmentin",
+      dosage: "625mg",
+      exactTime: "00:00",
+      duration: 5,
+      notes: "after meals"
+    }
+  }
 ];
+
+const formatTime12h = (time24: string) => {
+  if (!time24 || time24 === "00:00") return "00:00";
+  const [hourStr, minStr] = time24.split(":");
+  const hour = parseInt(hourStr);
+  if (isNaN(hour)) return "00:00";
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${minStr} ${ampm}`;
+};
 
 export default function PrescriptionUploadPage() {
   const router = useRouter();
@@ -62,7 +114,7 @@ export default function PrescriptionUploadPage() {
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <p className="text-slate-800 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to scan prescription scripts.
           </p>
         </div>
@@ -82,8 +134,10 @@ export default function PrescriptionUploadPage() {
   const [processStep, setProcessStep] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const [extractedMeds, setExtractedMeds] = useState<ExtractedMed[]>(mockParsedMeds);
-  const [selectedMeds, setSelectedMeds] = useState<number[]>([0, 1]); // default select all
+  const [selectedMeds, setSelectedMeds] = useState<number[]>([0, 1, 2]); // default select all
   const [isImported, setIsImported] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [isEditingTime, setIsEditingTime] = useState<number | null>(null);
 
   const processingSteps = [
     "Analyzing image contours and layout...",
@@ -98,7 +152,7 @@ export default function PrescriptionUploadPage() {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setPreviewUrl(URL.createObjectURL(selectedFile));
-      triggerMockAnalysis();
+      triggerRealAnalysis(selectedFile);
     }
   };
 
@@ -112,6 +166,7 @@ export default function PrescriptionUploadPage() {
     setIsProcessing(true);
     setProcessStep(0);
     setIsDone(false);
+    setScanError(null);
 
     const interval = setInterval(() => {
       setProcessStep((prev) => {
@@ -128,6 +183,57 @@ export default function PrescriptionUploadPage() {
     }, 900);
   };
 
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string).split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const triggerRealAnalysis = async (uploadedFile: File) => {
+    setIsProcessing(true);
+    setProcessStep(0);
+    setIsDone(false);
+    setScanError(null);
+
+    const stepInterval = setInterval(() => {
+      setProcessStep((prev) => (prev < processingSteps.length - 1 ? prev + 1 : prev));
+    }, 900);
+
+    try {
+      const base64 = await fileToBase64(uploadedFile);
+      const res = await fetch("/api/parse-prescription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: base64, mediaType: uploadedFile.type || "image/jpeg" }),
+      });
+      
+      const data = await res.json();
+      clearInterval(stepInterval);
+
+      if (!res.ok || data.error) {
+        setScanError(data.error || `Server error (${res.status})`);
+        setExtractedMeds(mockParsedMeds);
+        setSelectedMeds(mockParsedMeds.map((_, i) => i));
+      } else if (data.meds?.length > 0) {
+        setExtractedMeds(data.meds);
+        setSelectedMeds(data.meds.map((_: any, i: number) => i));
+      } else {
+        setScanError("No medications could be extracted");
+        setExtractedMeds(mockParsedMeds);
+        setSelectedMeds(mockParsedMeds.map((_, i) => i));
+      }
+    } catch (err: any) {
+      clearInterval(stepInterval);
+      setScanError(err.message || "Failed to contact parser API");
+      setExtractedMeds(mockParsedMeds);
+      setSelectedMeds(mockParsedMeds.map((_, i) => i));
+    } finally {
+      setTimeout(() => { setIsProcessing(false); setIsDone(true); }, 400);
+    }
+  };
+
   const handleToggleSelect = (index: number) => {
     setSelectedMeds((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -137,10 +243,14 @@ export default function PrescriptionUploadPage() {
   const handleFieldChange = (index: number, field: keyof ExtractedMed, value: any) => {
     setExtractedMeds((prev) => {
       const updated = [...prev];
-      updated[index] = {
+      const updatedMed = {
         ...updated[index],
         [field]: value,
       };
+      if (field === "exactTime") {
+        updatedMed.reminderStatus = value !== "00:00" ? "Scheduled" : "Needs Time";
+      }
+      updated[index] = updatedMed;
       return updated;
     });
   };
@@ -167,6 +277,13 @@ export default function PrescriptionUploadPage() {
         duration: med.duration,
         startDate: new Date().toISOString().split("T")[0],
         notes: med.notes,
+        originalOcrData: med.originalOcrData || {
+          name: med.name,
+          dosage: med.dosage,
+          exactTime: med.exactTime,
+          duration: med.duration,
+          notes: med.notes
+        }
       };
     });
 
@@ -184,8 +301,10 @@ export default function PrescriptionUploadPage() {
     setIsProcessing(false);
     setIsDone(false);
     setIsImported(false);
+    setScanError(null);
     setExtractedMeds(mockParsedMeds);
-    setSelectedMeds([0, 1]);
+    setSelectedMeds(mockParsedMeds.map((_, i) => i));
+    setIsEditingTime(null);
   };
 
   return (
@@ -194,12 +313,12 @@ export default function PrescriptionUploadPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-4 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">AI Prescription Scanner</h1>
-          <p className="text-slate-500 text-sm">Upload written prescription sheets to simulate automated schedule logs.</p>
+          <p className="text-slate-800 text-sm">Upload written prescription sheets to simulate automated schedule logs.</p>
         </div>
         <div>
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-700 bg-white border border-slate-200 px-3 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-905 bg-white border border-slate-250 px-3 py-2 rounded-lg transition-colors"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             <span>Reset Scanner</span>
@@ -228,10 +347,10 @@ export default function PrescriptionUploadPage() {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-slate-700">Drag and drop file here</p>
-                    <p className="text-xs text-slate-400 mt-1">Supports PNG, JPG, or PDF (Max 10MB)</p>
+                    <p className="text-xs text-slate-800 mt-1">Supports PNG, JPG, or PDF (Max 10MB)</p>
                   </div>
                   <div className="relative flex justify-center py-2">
-                    <span className="bg-slate-55 px-2 text-xs font-bold text-slate-400">or</span>
+                    <span className="bg-slate-55 px-2 text-xs font-bold text-slate-800">or</span>
                   </div>
                   <button
                     type="button"
@@ -250,18 +369,18 @@ export default function PrescriptionUploadPage() {
                       <FileText className="h-16 w-16 text-teal-600 mx-auto opacity-75" />
                       <div className="border-t border-slate-200 pt-3 text-left font-serif space-y-2">
                         <p className="text-xs font-bold text-teal-955 uppercase">Metro General Cardiology Clinic</p>
-                        <p className="text-[10px] text-slate-400">Date: June 15, 2026 • Patient: Ramesh</p>
+                        <p className="text-[10px] text-slate-800">Date: June 15, 2026 • Patient: Ramesh</p>
                         <p className="text-xs text-slate-700 mt-2 font-semibold">Rx:</p>
                         <p className="text-xs italic text-slate-700 pl-2">1. Atorvastatin 10mg - QD tab hs #30</p>
                         <p className="text-xs italic text-slate-700 pl-2">2. Levothyroxine 50mcg - QD tab qam ac #90</p>
-                        <p className="text-[9px] text-slate-400 mt-4 text-right">Signed: Dr. Sarah Alcott, MD</p>
+                        <p className="text-[9px] text-slate-800 mt-4 text-right">Signed: Dr. Sarah Alcott, MD</p>
                       </div>
                     </div>
                   ) : (
                     <div className="p-8 text-center space-y-2">
-                      <FileText className="h-12 w-12 text-slate-400 mx-auto" />
-                      <p className="text-xs font-bold text-slate-600">{file?.name}</p>
-                      <p className="text-[10px] text-slate-400">{(file?.size ? file.size / 1024 : 0).toFixed(1)} KB</p>
+                      <FileText className="h-12 w-12 text-slate-800 mx-auto" />
+                      <p className="text-xs font-bold text-slate-800">{file?.name}</p>
+                      <p className="text-[10px] text-slate-800">{(file?.size ? file.size / 1024 : 0).toFixed(1)} KB</p>
                     </div>
                   )}
                 </div>
@@ -269,7 +388,7 @@ export default function PrescriptionUploadPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="flex-1 text-center py-2 px-4 border border-slate-200 text-xs font-bold text-slate-650 bg-white hover:bg-slate-55 rounded-lg transition-all"
+                    className="flex-1 text-center py-2 px-4 border border-slate-205 text-xs font-bold text-slate-800 bg-white hover:bg-slate-55 rounded-lg transition-all"
                   >
                     Clear File
                   </button>
@@ -306,7 +425,7 @@ export default function PrescriptionUploadPage() {
                 <h2 className="text-sm font-bold text-slate-800">AI Extraction Status</h2>
               </div>
               <div>
-                {!previewUrl && <span className="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">Waiting for file</span>}
+                {!previewUrl && <span className="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">Waiting for file</span>}
                 {isProcessing && <span className="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold animate-pulse">Processing...</span>}
                 {isDone && <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5"><Check className="h-3 w-3" /> Ready</span>}
               </div>
@@ -316,12 +435,12 @@ export default function PrescriptionUploadPage() {
               
               {!previewUrl && !isProcessing && (
                 <div className="text-center py-16 space-y-3">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
                     <FileText className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-700">No Document Uploaded</h3>
-                    <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+                    <h3 className="text-sm font-bold text-slate-850">No Document Uploaded</h3>
+                    <p className="text-xs text-slate-800 mt-1 max-w-xs mx-auto">
                       Upload a prescription or click "Use Sample Medical Script" to verify the AI parser.
                     </p>
                   </div>
@@ -334,7 +453,7 @@ export default function PrescriptionUploadPage() {
                     <div className="w-12 h-12 rounded-full border-4 border-teal-200 border-t-teal-600 animate-spin"></div>
                   </div>
                   <div className="text-center space-y-1.5">
-                    <h3 className="text-sm font-bold text-slate-700">Extracting Medication Data</h3>
+                    <h3 className="text-sm font-bold text-slate-850">Extracting Medication Data</h3>
                     <p className="text-xs text-teal-600 font-semibold animate-pulse">{processingSteps[processStep]}</p>
                   </div>
                   <div className="w-full bg-slate-100 rounded-full h-1.5 max-w-sm mx-auto overflow-hidden">
@@ -355,7 +474,14 @@ export default function PrescriptionUploadPage() {
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 bg-amber-50 border border-amber-100 p-3 rounded-lg">
+                  {scanError && (
+                    <div className="p-4 rounded-lg bg-amber-50 border border-amber-250 text-amber-800 text-sm font-bold flex items-center gap-2 mb-4">
+                      <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
+                      <span>Real-time AI scanning failed: {scanError}. Displaying mock demo data as fallback.</span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-800 bg-amber-50 border border-amber-100 p-3 rounded-lg">
                     <AlertCircle className="h-4 w-4 text-amber-550 shrink-0" />
                     <span>Please verify the extracted values against the original prescription sheet for accuracy.</span>
                   </div>
@@ -366,97 +492,183 @@ export default function PrescriptionUploadPage() {
                       return (
                         <div 
                           key={med.id} 
-                          className={`border rounded-xl p-4 transition-all relative ${
+                          className={`border rounded-xl p-5 transition-all relative ${
                             isSelected 
-                              ? "border-teal-500 bg-teal-50/20" 
-                              : "border-slate-200 bg-white opacity-70"
+                              ? "border-teal-500 bg-teal-50/10 shadow-xs" 
+                              : "border-slate-200 bg-white/50 opacity-60"
                           }`}
                         >
+                          {/* Selection Checkbox */}
                           <div className="absolute top-4 right-4">
                             <input
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleToggleSelect(index)}
-                              className="h-4 w-4 rounded-sm border-slate-350 text-teal-650 focus:ring-teal-500"
+                              className="h-4 w-4 rounded-sm border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
                             />
                           </div>
 
-                          <div className="space-y-3 pr-8">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-md">
+                          <div className="space-y-4">
+                            {/* Card Header with Badges */}
+                            <div className="flex flex-wrap items-center gap-2 pr-8">
+                              <span className="text-[10px] bg-teal-150 text-teal-800 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                                 Extracted {index + 1}
+                              </span>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 ${
+                                med.exactTime === "00:00"
+                                  ? "bg-amber-50 text-amber-700 border-amber-200 animate-pulse"
+                                  : "bg-emerald-50 text-emerald-700 border-emerald-250"
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${med.exactTime === "00:00" ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`}></span>
+                                {med.exactTime === "00:00" ? "Needs Time" : "Scheduled"}
                               </span>
                             </div>
 
+                            {/* Main Grid: Card details */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="block text-[10px] font-bold text-slate-400 uppercase">Medication Name</label>
-                                <input
-                                  type="text"
-                                  value={med.name}
-                                  onChange={(e) => handleFieldChange(index, "name", e.target.value)}
-                                  className="w-full text-sm font-semibold text-slate-800 border-b border-slate-200 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-slate-400 uppercase">Dosage</label>
-                                <input
-                                  type="text"
-                                  value={med.dosage}
-                                  onChange={(e) => handleFieldChange(index, "dosage", e.target.value)}
-                                  className="w-full text-sm text-slate-800 border-b border-slate-200 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent"
-                                />
-                              </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-slate-400 uppercase">Timeslots Scheduled</label>
-                                <div className="flex gap-1.5 mt-1">
-                                  {["morning", "afternoon", "evening", "night"].map((slot) => {
-                                    const active = med.timeOfDay.includes(slot);
-                                    return (
-                                      <span 
-                                        key={slot} 
-                                        className={`text-[10px] uppercase px-2 py-0.5 rounded-md font-bold ${
-                                          active 
-                                            ? "bg-teal-650 text-white" 
-                                            : "bg-slate-100 text-slate-400"
-                                        }`}
-                                      >
-                                        {slot}
-                                      </span>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-slate-400 uppercase">Duration & Time</label>
-                                <div className="flex gap-2 items-center">
+                              <div className="space-y-2">
+                                {/* Medicine Name Row */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Medicine:</span>
                                   <input
                                     type="text"
-                                    value={med.exactTime}
-                                    onChange={(e) => handleFieldChange(index, "exactTime", e.target.value)}
-                                    className="w-14 text-sm text-slate-800 border-b border-slate-200 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent"
+                                    value={med.name ?? ""}
+                                    onChange={(e) => handleFieldChange(index, "name", e.target.value)}
+                                    className="flex-1 text-sm font-semibold text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 rounded-xs"
+                                    placeholder="e.g. Augmentin"
                                   />
-                                  <span className="text-xs text-slate-400">for</span>
+                                </div>
+
+                                {/* Dosage Row */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Dosage:</span>
                                   <input
-                                    type="number"
-                                    value={med.duration}
-                                    onChange={(e) => handleFieldChange(index, "duration", parseInt(e.target.value) || 0)}
-                                    className="w-12 text-sm text-slate-800 border-b border-slate-200 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent"
+                                    type="text"
+                                    value={med.dosage ?? ""}
+                                    onChange={(e) => handleFieldChange(index, "dosage", e.target.value)}
+                                    className="flex-1 text-sm text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 rounded-xs"
+                                    placeholder="e.g. 625mg"
                                   />
-                                  <span className="text-xs text-slate-400">days</span>
+                                </div>
+
+                                {/* Duration Row */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Duration:</span>
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <input
+                                      type="number"
+                                      value={med.duration || ""}
+                                      onChange={(e) => handleFieldChange(index, "duration", parseInt(e.target.value) || 0)}
+                                      className="w-16 text-sm text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 rounded-xs"
+                                      placeholder="e.g. 5"
+                                    />
+                                    <span className="text-xs text-slate-800 font-semibold">
+                                      {med.duration ? `for ${med.duration} days` : "days (missing duration)"}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-2">
+                                {/* Time Row */}
+                                <div className="flex items-start gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0 mt-1">Time:</span>
+                                  <div className="flex flex-wrap items-center gap-2 flex-1">
+                                    {isEditingTime === index ? (
+                                      <div className="flex items-center gap-2 bg-slate-50 p-1 border border-slate-200 rounded-lg">
+                                        <input
+                                          type="time"
+                                          value={med.exactTime || "00:00"}
+                                          onChange={(e) => handleFieldChange(index, "exactTime", e.target.value)}
+                                          className="text-xs font-semibold text-slate-800 bg-transparent border-0 focus:ring-0 focus:outline-hidden p-0.5"
+                                        />
+                                        <button
+                                          onClick={() => setIsEditingTime(null)}
+                                          className="text-[10px] font-bold text-teal-650 bg-teal-50 hover:bg-teal-100 px-2 py-1 rounded-md border border-teal-200 transition-colors"
+                                        >
+                                          Done
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <div className="flex items-center gap-2">
+                                        <span className={`text-sm font-extrabold px-2.5 py-1 rounded-lg shadow-2xs border ${
+                                          med.exactTime === "00:00"
+                                            ? "bg-amber-50 text-amber-800 border-amber-200"
+                                            : "bg-teal-50 text-teal-800 border-teal-200"
+                                        }`}>
+                                          {med.exactTime && med.exactTime !== "00:00" ? formatTime12h(med.exactTime) : "00:00"}
+                                        </span>
+                                        <button
+                                          onClick={() => setIsEditingTime(index)}
+                                          className="text-[10px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 px-2 py-1 bg-teal-50 hover:bg-teal-100 rounded-md border border-teal-150 transition-all active:scale-95"
+                                        >
+                                          {med.exactTime === "00:00" ? "Set Time" : "Edit Time"}
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Instructions Row */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Instructions:</span>
+                                  <input
+                                    type="text"
+                                    value={med.notes ?? ""}
+                                    onChange={(e) => handleFieldChange(index, "notes", e.target.value)}
+                                    className="flex-1 text-xs text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 rounded-xs"
+                                    placeholder="e.g. after meals"
+                                  />
+                                </div>
+ 
+                                {/* Time Slot Row */}
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Time Slot:</span>
+                                  <div className="flex flex-wrap gap-1 flex-1">
+                                    {["morning", "afternoon", "evening", "night"].map((slot) => {
+                                      const active = med.timeOfDay.includes(slot);
+                                      return (
+                                        <button
+                                          key={slot}
+                                          type="button"
+                                          onClick={() => {
+                                            const updatedSlots = active
+                                              ? med.timeOfDay.filter((s) => s !== slot)
+                                              : [...med.timeOfDay, slot];
+                                            handleFieldChange(index, "timeOfDay", updatedSlots);
+                                          }}
+                                          className={`text-[9px] uppercase px-2 py-0.5 rounded-md font-bold transition-all border ${
+                                            active
+                                              ? "bg-teal-650 text-white border-teal-700 shadow-xs"
+                                              : "bg-slate-50 text-slate-800 border-slate-205 hover:bg-slate-100"
+                                          }`}
+                                        >
+                                          {slot}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
-                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase">Special Instructions</label>
-                              <input
-                                type="text"
-                                value={med.notes}
-                                onChange={(e) => handleFieldChange(index, "notes", e.target.value)}
-                                className="w-full text-xs text-slate-650 border-b border-slate-200 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent"
-                              />
-                            </div>
+                            {/* Original OCR Output Snapshot (Data Consistency Guarantee) */}
+                            {med.originalOcrData && (
+                              <div className="mt-2 text-[10px] text-slate-800 bg-slate-50/50 border border-slate-250 rounded-lg p-2.5 space-y-1">
+                                <div className="font-bold text-slate-800 flex items-center gap-1 uppercase tracking-wider text-[9px]">
+                                  <span>🔍 AI OCR Preserved Record</span>
+                                </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-0.5 leading-normal">
+                                  <div>Name: <span className="font-semibold text-slate-800">"{med.originalOcrData.name || "N/A"}"</span></div>
+                                  <div>Dosage: <span className="font-semibold text-slate-800">"{med.originalOcrData.dosage || "N/A"}"</span></div>
+                                  <div>Time: <span className="font-semibold text-slate-800">"{med.originalOcrData.exactTime || "N/A"}"</span></div>
+                                  <div>Duration: <span className="font-semibold text-slate-800">{med.originalOcrData.duration ? `${med.originalOcrData.duration} days` : "N/A"}</span></div>
+                                </div>
+                                {med.originalOcrData.notes && (
+                                  <div className="truncate">Instructions: <span className="font-semibold text-slate-800">"{med.originalOcrData.notes}"</span></div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       );

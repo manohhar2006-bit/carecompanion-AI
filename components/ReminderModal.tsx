@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { useAppState, ActiveReminder, ReminderHistoryItem } from "@/context/AppContext";
+import { useAppState, ActiveReminder, ReminderHistoryItem, generateUniqueId } from "@/context/AppContext";
 import { Pill, Check, Clock, AlertCircle, BellRing } from "lucide-react";
-import { formatTime12h } from "./ReminderEngine";
+import { formatTime12h, getLanguageCode, getLocalizedFeedback, speakTextWithVoice } from "./ReminderEngine";
 
 export default function ReminderModal() {
   const {
@@ -28,18 +28,16 @@ export default function ReminderModal() {
 
     // 2. Play feedback sound
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const text = `Dose marked taken. Thank you, ${activeProfile.name}.`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85;
-      window.speechSynthesis.speak(utterance);
+      const feedbackText = getLocalizedFeedback(activeProfile?.language, activeProfile.name, "taken");
+      const targetLangCode = getLanguageCode(activeProfile?.language);
+      speakTextWithVoice(feedbackText, targetLangCode, activeProfile?.language, 0.85);
     }
 
     // 3. Add to history
     const now = new Date();
     const currentHHMM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
     const historyItem: ReminderHistoryItem = {
-      id: `hist-${Date.now()}`,
+      id: generateUniqueId("hist"),
       medicineId: reminder.medicineId,
       medicineName: reminder.medicineName,
       dosage: reminder.dosage,
@@ -62,18 +60,16 @@ export default function ReminderModal() {
     
     // Play voice feedback
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const text = `Snoozed. I will remind you again in ${isFastDemoMode ? "one minute" : "five minutes"}.`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85;
-      window.speechSynthesis.speak(utterance);
+      const feedbackText = getLocalizedFeedback(activeProfile?.language, activeProfile.name, "snoozed", isFastDemoMode);
+      const targetLangCode = getLanguageCode(activeProfile?.language);
+      speakTextWithVoice(feedbackText, targetLangCode, activeProfile?.language, 0.85);
     }
 
     // Log snooze in history
     const now = new Date();
     const currentHHMM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
     const historyItem: ReminderHistoryItem = {
-      id: `hist-${Date.now()}`,
+      id: generateUniqueId("hist"),
       medicineId: reminder.medicineId,
       medicineName: reminder.medicineName,
       dosage: reminder.dosage,
@@ -116,7 +112,7 @@ export default function ReminderModal() {
           <h2 className="text-xl font-black text-slate-800 mt-3">
             Hello {activeProfile.name}, it's time for your medicine!
           </h2>
-          <p className="text-slate-500 text-xs mt-1">
+          <p className="text-slate-705 text-xs mt-1">
             Please take your dose as prescribed. Spoken caregiver cues are active.
           </p>
         </div>
@@ -133,7 +129,7 @@ export default function ReminderModal() {
                   <h3 className="text-lg font-black text-slate-900 leading-tight">
                     {reminder.medicineName}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 font-medium">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-700 font-semibold">
                     <span>Dosage: <strong className="text-slate-700">{reminder.dosage}</strong></span>
                     <span>•</span>
                     <span className="capitalize">Routine: <strong className="text-slate-700">{reminder.timeSlot}</strong></span>
@@ -141,7 +137,7 @@ export default function ReminderModal() {
                     <span>Time: <strong className="text-slate-700">{formatTime12h(reminder.scheduledTime)}</strong></span>
                   </div>
                   {reminder.notes && (
-                    <p className="text-xs text-slate-500 italic bg-amber-50 border border-amber-100 p-2 rounded-lg mt-2 flex items-start gap-1">
+                    <p className="text-xs text-slate-750 italic bg-amber-50 border border-amber-100 p-2 rounded-lg mt-2 flex items-start gap-1">
                       <AlertCircle className="h-3.5 w-3.5 text-amber-600 shrink-0 mt-0.5" />
                       <span><strong>Special Note:</strong> {reminder.notes}</span>
                     </p>
@@ -172,7 +168,7 @@ export default function ReminderModal() {
 
         {/* Modal Footer Info */}
         <div className="bg-slate-50 px-6 py-4 border-t border-slate-100 text-center">
-          <p className="text-[10px] text-slate-400 font-bold tracking-wider uppercase">
+          <p className="text-[10px] text-slate-650 font-bold tracking-wider uppercase">
             Escalation Active • Caregivers notified automatically if dose is missed
           </p>
         </div>

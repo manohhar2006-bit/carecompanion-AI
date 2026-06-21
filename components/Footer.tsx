@@ -15,7 +15,8 @@ export default function Footer() {
     "/upload",
     "/reminders",
     "/caregiver",
-    "/report"
+    "/report",
+    "/consultation"
   ].some((path) => pathname.startsWith(path));
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -31,19 +32,6 @@ export default function Footer() {
   };
   return (
     <footer className="mt-auto border-t border-slate-200 bg-slate-900 text-slate-300 print:hidden">
-      {/* Disclaimer Bar */}
-      <div className="bg-red-950/40 border-b border-red-900/40 py-4 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex items-start gap-3 text-xs text-red-200">
-          <AlertCircle className="h-5 w-5 text-red-400 shrink-0 mt-0.5" />
-          <p>
-            <strong>EMERGENCY MEDICAL DISCLAIMER:</strong> CareCompanion AI is an interactive elder care support tool 
-            designed to assist families with pill reminders and adherence tracking. It does NOT diagnose diseases, prescribe 
-            medications, or replace professional medical advice. If you are experiencing a medical emergency, please call 
-            <strong> 911</strong> or go to the nearest emergency room immediately.
-          </p>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Contact details */}
@@ -133,6 +121,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/consultation" className="hover:text-teal-400 transition-colors">
+                    Consultation Summarizer
+                  </Link>
+                </li>
+                <li>
                   <Link href="/report" className="hover:text-teal-400 transition-colors">
                     Doctor-Friendly Summary
                   </Link>
@@ -186,12 +179,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} CareCompanion AI Clinic Portal. All rights reserved.</p>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <a href="#" className="hover:underline">Privacy Policy</a>
-            <a href="#" className="hover:underline">Terms of Service</a>
-            <a href="#" className="hover:underline">Clinic Directory</a>
+        <div className="mt-8 border-t border-slate-800 pt-8 space-y-4">
+          <p className="text-[11px] text-slate-400 leading-relaxed">
+            <strong>Disclaimer:</strong> CareCompanion AI is an interactive wellness tool and does not provide professional medical advice, diagnosis, or treatment. Always consult a physician for health concerns.
+          </p>
+          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 pt-4 border-t border-slate-800/40">
+            <p>© {new Date().getFullYear()} CareCompanion AI Clinic Portal. All rights reserved.</p>
+            <div className="flex gap-4 mt-4 md:mt-0">
+              <a href="#" className="hover:underline">Privacy Policy</a>
+              <a href="#" className="hover:underline">Terms of Service</a>
+              <a href="#" className="hover:underline">Clinic Directory</a>
+            </div>
           </div>
         </div>
       </div>

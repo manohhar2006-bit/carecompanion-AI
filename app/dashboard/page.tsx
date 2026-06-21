@@ -25,7 +25,7 @@ import {
   History
 } from "lucide-react";
 import Link from "next/link";
-import { formatTime12h } from "@/components/ReminderEngine";
+import { formatTime12h, getLanguageCode, getLocalizedReminder, speakTextWithVoice } from "@/components/ReminderEngine";
 
 export default function PatientDashboard() {
   const { 
@@ -65,7 +65,7 @@ export default function PatientDashboard() {
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <p className="text-slate-800 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to unlock daily adherence logs and schedules.
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function PatientDashboard() {
   // Determine next reminder time (sort pending doses by time)
   const pendingDoses = todayDoses
     .filter(d => d.status === "pending")
-    .sort((a, b) => a.exactTime.localeCompare(b.exactTime));
+    .sort((a, b) => (a.exactTime || "").localeCompare(b.exactTime || ""));
   
   const nextReminderTime = pendingDoses.length > 0 
     ? `${formatTime12h(pendingDoses[0].exactTime)} (${pendingDoses[0].medicineName})`
@@ -183,25 +183,19 @@ export default function PatientDashboard() {
 
   const triggerVoiceReminder = (medName: string, dosage: string, timeSlot: string) => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const slotGreetings = {
-        morning: "Good morning",
-        afternoon: "Good afternoon",
-        evening: "Good evening",
-        night: "Good night"
-      };
-      const slotGreeting = slotGreetings[timeSlot as keyof typeof slotGreetings] || "Hello";
-      const text = `${slotGreeting}, ${activeProfile.name}. This is your Care Companion reminder. It is time to take your medication. Please take ${dosage} of ${medName}.`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85;
+      const { langCode, speechText } = getLocalizedReminder(
+        activeProfile?.language,
+        activeProfile.name,
+        medName,
+        dosage,
+        timeSlot
+      );
       
-      const voices = window.speechSynthesis.getVoices();
-      const englishVoices = voices.filter(v => v.lang.startsWith("en"));
-      let femaleVoice = englishVoices.find(v => v.name.toLowerCase().includes("zira") || v.name.toLowerCase().includes("samantha") || v.name.toLowerCase().includes("google us"));
-      if (!femaleVoice && englishVoices.length > 0) femaleVoice = englishVoices[0];
-      if (femaleVoice) utterance.voice = femaleVoice;
-      
-      window.speechSynthesis.speak(utterance);
+      speakTextWithVoice(
+        speechText,
+        langCode,
+        activeProfile?.language
+      );
     } else {
       alert("Text-to-speech is not supported in this browser.");
     }
@@ -256,7 +250,7 @@ export default function PatientDashboard() {
           <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-1.5">
             Today’s Care Routine
           </h1>
-          <p className="text-slate-500 text-xs font-medium uppercase tracking-wide">
+          <p className="text-slate-800 text-xs font-bold uppercase tracking-wide">
             {new Date(currentDate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} • Care Plan Adherence Monitoring
           </p>
         </div>
@@ -293,7 +287,7 @@ export default function PatientDashboard() {
           {/* Patient Profile Card */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative overflow-hidden group hover:shadow-md transition-all duration-300">
             <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full -translate-y-8 translate-x-8 blur-lg"></div>
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Patient Profile</h3>
+            <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest mb-4">Patient Profile</h3>
             
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 border border-teal-100">
@@ -301,10 +295,11 @@ export default function PatientDashboard() {
               </div>
               <div className="space-y-1">
                 <h4 className="text-xl font-bold text-slate-900 leading-tight">{activeProfile.name}</h4>
-                <p className="text-xs text-slate-500">{activeProfile.gender} • Age {activeProfile.age}</p>
-                <div className="pt-2 text-xs text-slate-700 space-y-1">
-                  <p>⚕️ <span className="font-semibold text-slate-500">Condition:</span> {activeProfile.condition}</p>
-                  <p>👥 <span className="font-semibold text-slate-500">Caregiver:</span> {activeProfile.caregiverName}</p>
+                <p className="text-xs text-slate-600">{activeProfile.gender} • Age {activeProfile.age}</p>
+                <div className="pt-2 text-xs text-slate-800 space-y-1">
+                  <p>⚕️ <span className="font-semibold text-slate-800">Condition:</span> {activeProfile.condition}</p>
+                  <p>👥 <span className="font-semibold text-slate-800">Caregiver:</span> {activeProfile.caregiverName}</p>
+                  <p>🔊 <span className="font-semibold text-slate-800">Reminders in:</span> {activeProfile.language || "English"}</p>
                 </div>
               </div>
             </div>
@@ -314,7 +309,7 @@ export default function PatientDashboard() {
                 Switch Patient Profile
                 <ChevronRight className="h-3.5 w-3.5" />
               </Link>
-              <Link href="/caregiver" className="text-slate-500 hover:text-slate-700 font-semibold">
+              <Link href="/caregiver" className="text-slate-800 hover:text-slate-950 font-bold">
                 Edit Care Plan
               </Link>
             </div>
@@ -322,7 +317,7 @@ export default function PatientDashboard() {
 
           {/* Today's Care Snapshot */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+            <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest flex items-center gap-1">
               <TrendingUp className="h-4 w-4 text-teal-600" />
               Today’s Care Snapshot
             </h3>
@@ -334,7 +329,7 @@ export default function PatientDashboard() {
               </div>
               <div className="space-y-0.5">
                 <h4 className="text-xs font-bold text-slate-800">Medication Adherence</h4>
-                <p className="text-[10px] text-slate-500 leading-normal">
+                <p className="text-[10px] text-slate-800 leading-normal">
                   {takenCount} of {totalScheduledToday} doses logged taken today.
                 </p>
               </div>
@@ -343,19 +338,19 @@ export default function PatientDashboard() {
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-150">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block">Scheduled</span>
+                <span className="text-[9px] uppercase font-bold text-slate-800 block">Scheduled</span>
                 <strong className="text-xl font-bold text-slate-800 block mt-1">{totalScheduledToday} Doses</strong>
               </div>
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-150">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block">Completed</span>
+                <span className="text-[9px] uppercase font-bold text-slate-800 block">Completed</span>
                 <strong className="text-xl font-bold text-emerald-600 block mt-1">{takenCount} Doses</strong>
               </div>
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-150">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block">Missed Logs</span>
+                <span className="text-[9px] uppercase font-bold text-slate-800 block">Missed Logs</span>
                 <strong className="text-xl font-bold text-red-500 block mt-1">{missedCount} Doses</strong>
               </div>
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-150">
-                <span className="text-[9px] uppercase font-bold text-slate-400 block">Next Reminder</span>
+                <span className="text-[9px] uppercase font-bold text-slate-800 block">Next Reminder</span>
                 <strong className="text-xs font-bold text-slate-800 block mt-1.5 truncate" title={nextReminderTime}>
                   {nextReminderTime}
                 </strong>
@@ -365,7 +360,7 @@ export default function PatientDashboard() {
 
           {/* Voice Reminder Engine Status Card */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+            <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest flex items-center gap-1.5">
               <Activity className="h-4 w-4 text-teal-650" />
               Live Reminder Assistant Monitor
             </h3>
@@ -373,7 +368,7 @@ export default function PatientDashboard() {
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-teal-50/50 border border-teal-100 rounded-xl">
                 <div className="space-y-0.5">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase">Voice Assistant Status</span>
+                  <span className="text-[9px] font-bold text-slate-800 uppercase">Voice Assistant Status</span>
                   <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     {voiceReminderStatus}
@@ -389,30 +384,30 @@ export default function PatientDashboard() {
               </div>
 
               <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl space-y-1">
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Upcoming Reminder Alert</span>
+                <span className="text-[9px] font-bold text-slate-800 uppercase">Upcoming Reminder Alert</span>
                 {pendingDoses.length > 0 ? (
                   <div className="text-xs">
                     <p className="font-bold text-slate-800">
                       🕒 {formatTime12h(pendingDoses[0].exactTime)} - {pendingDoses[0].medicineName}
                     </p>
-                    <p className="text-slate-500 mt-0.5">
+                    <p className="text-slate-655 mt-0.5">
                       Dosage: {pendingDoses[0].dosage} ({pendingDoses[0].timeSlot} routine)
                     </p>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic">No upcoming reminders pending for today.</p>
+                  <p className="text-xs text-slate-800 italic">No upcoming reminders pending for today.</p>
                 )}
               </div>
 
               <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl space-y-1">
-                <span className="text-[9px] font-bold text-slate-400 uppercase">Last Reminder Triggered</span>
+                <span className="text-[9px] font-bold text-slate-800 uppercase">Last Reminder Triggered</span>
                 {lastReminderTriggered ? (
                   <div className="text-xs flex justify-between items-center">
                     <div>
                       <p className="font-bold text-slate-800">
                         📢 {formatTime12h(lastReminderTriggered.scheduledTime)}: {lastReminderTriggered.medicineName}
                       </p>
-                      <p className="text-[10px] text-slate-400">Triggered today at {formatTime12h(lastReminderTriggered.timestamp)}</p>
+                      <p className="text-[10px] text-slate-800 font-semibold">Triggered today at {formatTime12h(lastReminderTriggered.timestamp)}</p>
                     </div>
                     <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-md border ${
                       lastReminderTriggered.status === "taken" ? "bg-emerald-50 text-emerald-800 border-emerald-250" :
@@ -424,7 +419,7 @@ export default function PatientDashboard() {
                     </span>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400 italic">No reminders triggered yet today.</p>
+                  <p className="text-xs text-slate-800 italic">No reminders triggered yet today.</p>
                 )}
               </div>
             </div>
@@ -432,20 +427,20 @@ export default function PatientDashboard() {
 
           {/* Reminder History Log */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+            <h3 className="text-xs font-black text-slate-850 uppercase tracking-widest flex items-center gap-1.5">
               <History className="h-4 w-4 text-teal-655" />
               Reminder History Log
             </h3>
             
             {reminderHistory.length === 0 ? (
-              <p className="text-xs text-slate-400 italic text-center py-6">No reminder operations recorded yet.</p>
+              <p className="text-xs text-slate-800 italic text-center py-6">No reminder operations recorded yet.</p>
             ) : (
               <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                {reminderHistory.map((item) => (
-                  <div key={item.id} className="p-2.5 rounded-xl border border-slate-150 text-xs flex justify-between items-center bg-white shadow-2xs hover:bg-slate-55 transition-colors">
+                {reminderHistory.map((item, idx) => (
+                  <div key={`${item.id}-${idx}`} className="p-2.5 rounded-xl border border-slate-150 text-xs flex justify-between items-center bg-white shadow-2xs hover:bg-slate-55 transition-colors">
                     <div className="space-y-0.5 pr-2">
                       <p className="font-bold text-slate-800">{item.medicineName}</p>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-slate-800 font-semibold">
                         {item.date} • {formatTime12h(item.scheduledTime)} routine
                       </p>
                     </div>
@@ -458,7 +453,7 @@ export default function PatientDashboard() {
                       }`}>
                         {item.status}
                       </span>
-                      <p className="text-[9px] text-slate-400 mt-0.5">at {formatTime12h(item.timestamp)}</p>
+                      <p className="text-[9px] text-slate-800 font-semibold mt-0.5">at {formatTime12h(item.timestamp)}</p>
                     </div>
                   </div>
                 ))}
@@ -556,7 +551,7 @@ export default function PatientDashboard() {
                 Caregiver Synced
               </h4>
               <p className="text-xs text-white font-bold leading-tight pt-1">Primary Connection: {activeProfile.caregiverName}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Logs synced over encrypted HIPAA framework.</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Logs synced across patient and caregiver views in real time.</p>
             </div>
             <Link 
               href="/caregiver"
@@ -582,11 +577,11 @@ export default function PatientDashboard() {
 
           {todayDoses.length === 0 ? (
             <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-full bg-slate-50 text-slate-650 flex items-center justify-center mx-auto">
                 <Pill className="h-6 w-6" />
               </div>
-              <h3 className="text-sm font-bold text-slate-705">No Medication Configured</h3>
-              <p className="text-xs text-slate-400 max-w-xs mx-auto">
+              <h3 className="text-sm font-bold text-slate-850">No Medication Configured</h3>
+              <p className="text-xs text-slate-650 max-w-xs mx-auto">
                 No active medication routines exist for this patient profile. Add a medicine or scan a script.
               </p>
               <div className="pt-2">
@@ -609,10 +604,10 @@ export default function PatientDashboard() {
                     <div className="bg-slate-50 border-b border-slate-150 px-6 py-3 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                        <h3 className="text-xs font-black text-slate-700 uppercase tracking-wider capitalize">{slot.name}</h3>
-                        <span className="text-[10px] text-slate-400">({slot.timeRange})</span>
+                        <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider capitalize">{slot.name}</h3>
+                        <span className="text-[10px] text-slate-800 font-bold">({slot.timeRange})</span>
                       </div>
-                      <span className="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">
                         {slotDoses.length} Meds
                       </span>
                     </div>
@@ -620,7 +615,7 @@ export default function PatientDashboard() {
                     {/* Slot Body */}
                     <div className="p-6">
                       {slotDoses.length === 0 ? (
-                        <p className="text-xs text-slate-400 italic">No medications scheduled for this routine.</p>
+                        <p className="text-xs text-slate-650 italic">No medications scheduled for this routine.</p>
                       ) : (
                         <div className="space-y-4">
                           {slotDoses.map((dose) => (
@@ -639,12 +634,12 @@ export default function PatientDashboard() {
                                   <Pill className="h-5 w-5" />
                                 </div>
                                 <div className="space-y-0.5">
-                                  <h4 className="text-base font-bold text-slate-800">{dose.medicineName}</h4>
-                                  <p className="text-xs text-slate-500">
-                                    Dosage: <strong className="text-slate-700">{dose.dosage}</strong> at <strong className="text-slate-700">{formatTime12h(dose.exactTime)}</strong>
+                                  <h4 className="text-base font-bold text-slate-900">{dose.medicineName}</h4>
+                                  <p className="text-xs text-slate-800 font-medium">
+                                    Dosage: <strong className="text-slate-900">{dose.dosage}</strong> at <strong className="text-slate-900">{formatTime12h(dose.exactTime)}</strong>
                                   </p>
                                   {dose.notes && (
-                                    <p className="text-[11px] text-slate-400 italic mt-1 leading-relaxed">★ Instruction: {dose.notes}</p>
+                                    <p className="text-[11px] text-slate-800 font-semibold italic mt-1 leading-relaxed">★ Instruction: {dose.notes}</p>
                                   )}
                                   {dose.timestamp && (
                                     <p className="text-[10px] text-emerald-650 font-black pt-1">Logged taken at: {formatTime12h(dose.timestamp.split(" ")[1])}</p>
@@ -659,7 +654,7 @@ export default function PatientDashboard() {
                                   {/* Speech synthesizer quick trigger */}
                                   <button
                                     onClick={() => triggerVoiceReminder(dose.medicineName, dose.dosage, slot.id)}
-                                    className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors border border-slate-200"
+                                    className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-850 rounded-lg transition-colors border border-slate-250"
                                     title="Listen to Spoken Caregiver Reminder"
                                   >
                                     <Volume2 className="h-4 w-4 text-teal-650" />
@@ -685,9 +680,9 @@ export default function PatientDashboard() {
                                   ) : (
                                     <button
                                       onClick={() => resetLogStatus(dose.medicineId, currentDate, slot.id)}
-                                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-550 bg-slate-50 hover:bg-slate-100 border border-slate-250 transition-colors"
+                                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-250 transition-colors"
                                     >
-                                      <RotateCcw className="h-3.5 w-3.5 text-slate-450" />
+                                      <RotateCcw className="h-3.5 w-3.5 text-slate-650" />
                                       <span>Undo</span>
                                     </button>
                                   )}
@@ -695,7 +690,7 @@ export default function PatientDashboard() {
                                   {/* Edit medicine option */}
                                   <Link
                                     href={`/add-medicine?id=${dose.medicineId}`}
-                                    className="p-1.5 text-slate-455 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                                    className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                                     title="Edit medicine schedule"
                                   >
                                     <Edit2 className="h-4 w-4" />
@@ -708,7 +703,7 @@ export default function PatientDashboard() {
                                         deleteMedicine(dose.medicineId);
                                       }
                                     }}
-                                    className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="p-1.5 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                     title="Delete medicine"
                                   >
                                     <Trash2 className="h-4 w-4" />

@@ -15,10 +15,10 @@ import {
   BellRing
 } from "lucide-react";
 import Link from "next/link";
-import { formatTime12h } from "@/components/ReminderEngine";
+import { formatTime12h, getLanguageCode, getActiveVoice, getLocalizedReminder, speakTextWithVoice, getLocalizedFeedback } from "@/components/ReminderEngine";
 
 export default function VoiceRemindersPage() {
-  const { activeProfile, medicines, trackingLogs, markAsTaken } = useAppState();
+  const { activeProfile, medicines, trackingLogs, markAsTaken, updateProfile } = useAppState();
 
   const [mounted, setMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
@@ -38,6 +38,7 @@ export default function VoiceRemindersPage() {
   
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [detectedVoiceName, setDetectedVoiceName] = useState("Loading voices...");
 
   useEffect(() => {
     setMounted(true);
@@ -50,6 +51,31 @@ export default function VoiceRemindersPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      setDetectedVoiceName("Speech Synthesis unsupported");
+      return;
+    }
+
+    const updateVoice = () => {
+      const voice = getActiveVoice(activeProfile?.language);
+      if (voice) {
+        setDetectedVoiceName(`${voice.name} (${voice.lang})`);
+      } else {
+        setDetectedVoiceName("System Default / Fallback");
+      }
+    };
+
+    updateVoice();
+    window.speechSynthesis.onvoiceschanged = updateVoice;
+    
+    return () => {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, [activeProfile?.language]);
+
   if (!mounted) return null;
 
   // Safety check if profile is loaded
@@ -60,8 +86,8 @@ export default function VoiceRemindersPage() {
           <AlertCircle className="h-8 w-8" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-slate-805">No Patient Profile Loaded</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
+          <p className="text-slate-800 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to configure voice reminder schedules.
           </p>
         </div>
@@ -74,6 +100,18 @@ export default function VoiceRemindersPage() {
       </div>
     );
   }
+
+  const sampleMedName = medicines[0]?.name || "Amlodipine";
+  const sampleDosage = medicines[0]?.dosage || "5mg";
+  const sampleTimeSlot = medicines[0]?.timeOfDay[0] || "morning";
+  const previewData = getLocalizedReminder(
+    activeProfile?.language,
+    activeProfile?.name || "Patient",
+    sampleMedName,
+    sampleDosage,
+    sampleTimeSlot
+  );
+  const previewText = previewData.speechText;
 
   // Generate today's schedule for voice playback
   interface TodayDose {
@@ -108,50 +146,28 @@ export default function VoiceRemindersPage() {
     });
   });
 
-  // Get current active English female voice
-  const getFemaleVoice = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoices = voices.filter(v => v.lang.startsWith("en"));
-    const femaleKeywords = ["google us english", "microsoft zira", "samantha", "victoria", "hazel", "siri", "female", "natural", "zira", "english"];
-    for (const keyword of femaleKeywords) {
-      const found = englishVoices.find(v => v.name.toLowerCase().includes(keyword));
-      if (found) return found;
-    }
-    return englishVoices[0] || voices[0] || null;
-  };
-
   const playVoiceReminder = (medName: string, dosage: string, timeSlot: string, idKey: string) => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
       setIsPlaying(idKey);
-
-      const slotGreetings = {
-        morning: "Good morning",
-        afternoon: "Good afternoon",
-        evening: "Good evening",
-        night: "Good night"
-      };
-      const slotGreeting = slotGreetings[timeSlot as keyof typeof slotGreetings] || "Hello";
-
-      const speechText = `${slotGreeting}, ${activeProfile.name}. This is your caregiver voice assistant. It is time to take your medication. Please take ${dosage} of ${medName}.`;
-
-      const utterance = new SpeechSynthesisUtterance(speechText);
-      utterance.rate = speechRate;
-      utterance.pitch = speechPitch;
-
-      const voice = getFemaleVoice();
-      if (voice) utterance.voice = voice;
       
-      utterance.onend = () => {
-        setIsPlaying(null);
-      };
+      const { langCode, speechText } = getLocalizedReminder(
+        activeProfile?.language,
+        activeProfile.name,
+        medName,
+        dosage,
+        timeSlot
+      );
 
-      utterance.onerror = () => {
-        setIsPlaying(null);
-      };
-
-      window.speechSynthesis.speak(utterance);
+      speakTextWithVoice(
+        speechText,
+        langCode,
+        activeProfile?.language,
+        speechRate,
+        speechPitch,
+        undefined,
+        () => setIsPlaying(null),
+        () => setIsPlaying(null)
+      );
     } else {
       alert("Voice synthesis is not supported on this browser.");
     }
@@ -159,19 +175,29 @@ export default function VoiceRemindersPage() {
 
   const playGeneralTest = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
       setIsPlaying("test-general");
-      const text = `Hello ${activeProfile.name}. This is Care Companion's voice assistant calibration test. Speed is configured at ${Math.round(speechRate * 100)} percent. This caring female voice is active.`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = speechRate;
-      utterance.pitch = speechPitch;
+      
+      const sampleMedName = medicines[0]?.name || "Amlodipine";
+      const sampleDosage = medicines[0]?.dosage || "5mg";
+      const sampleTimeSlot = medicines[0]?.timeOfDay[0] || "morning";
+      const { langCode, speechText } = getLocalizedReminder(
+        activeProfile?.language,
+        activeProfile.name,
+        sampleMedName,
+        sampleDosage,
+        sampleTimeSlot
+      );
 
-      const voice = getFemaleVoice();
-      if (voice) utterance.voice = voice;
-
-      utterance.onend = () => setIsPlaying(null);
-      utterance.onerror = () => setIsPlaying(null);
-      window.speechSynthesis.speak(utterance);
+      speakTextWithVoice(
+        speechText,
+        langCode,
+        activeProfile?.language,
+        speechRate,
+        speechPitch,
+        undefined,
+        () => setIsPlaying(null),
+        () => setIsPlaying(null)
+      );
     }
   };
 
@@ -197,25 +223,21 @@ export default function VoiceRemindersPage() {
     setIsAlertVisible(true);
 
     if (!isAudioMuted && typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const slotGreetings = {
-        morning: "Good morning",
-        afternoon: "Good afternoon",
-        evening: "Good evening",
-        night: "Good night"
-      };
-      const slotGreeting = slotGreetings[target.timeSlot as keyof typeof slotGreetings] || "Hello";
+      const { langCode, speechText } = getLocalizedReminder(
+        activeProfile?.language,
+        activeProfile.name,
+        target.name,
+        target.dosage,
+        target.timeSlot
+      );
       
-      const speechText = `Attention. ${slotGreeting}, ${activeProfile.name}. Medical schedule alert! It is time to take ${target.dosage} of ${target.name}.`;
-      
-      const utterance = new SpeechSynthesisUtterance(speechText);
-      utterance.rate = speechRate;
-      utterance.pitch = speechPitch;
-      
-      const voice = getFemaleVoice();
-      if (voice) utterance.voice = voice;
-
-      window.speechSynthesis.speak(utterance);
+      speakTextWithVoice(
+        speechText,
+        langCode,
+        activeProfile?.language,
+        speechRate,
+        speechPitch
+      );
     }
   };
 
@@ -225,12 +247,22 @@ export default function VoiceRemindersPage() {
       setIsAlertVisible(false);
       
       if (!isAudioMuted && typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(`Thank you, ${activeProfile.name}. Dose marked as taken. Caregivers notified.`);
-        utterance.rate = speechRate;
-        const voice = getFemaleVoice();
-        if (voice) utterance.voice = voice;
-        window.speechSynthesis.speak(utterance);
+        const { langCode } = getLocalizedReminder(
+          activeProfile?.language,
+          activeProfile.name,
+          activeAlert.name,
+          activeAlert.dosage,
+          activeAlert.timeSlot
+        );
+        
+        const feedbackText = getLocalizedFeedback(activeProfile?.language, activeProfile.name, "taken");
+
+        speakTextWithVoice(
+          feedbackText,
+          langCode,
+          activeProfile?.language,
+          speechRate
+        );
       }
 
       setActiveAlert(null);
@@ -255,7 +287,7 @@ export default function VoiceRemindersPage() {
             </span>
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-1.5">Voice Companion Reminders</h1>
-          <p className="text-slate-500 text-xs mt-0.5">Custom text-to-speech loops built for elder visual support and scheduling compliance.</p>
+          <p className="text-slate-800 text-xs mt-0.5">Custom text-to-speech loops built for elder visual support and scheduling compliance.</p>
         </div>
       </div>
 
@@ -268,12 +300,12 @@ export default function VoiceRemindersPage() {
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-bold text-slate-800 flex items-center gap-1.5">
-                <Settings className="h-5 w-5 text-teal-650" />
+                <Settings className="h-5 w-5 text-teal-700" />
                 Voice Synthesizer Calibration
               </h2>
               {isPlaying && (
                 <div className="flex items-end gap-0.5 h-4 shrink-0" title="Audio Synthesis Outputting">
-                  <span className="w-0.75 bg-teal-650 h-2 animate-[bounce_0.8s_infinite_100ms] rounded-full"></span>
+                  <span className="w-0.75 bg-teal-700 h-2 animate-[bounce_0.8s_infinite_100ms] rounded-full"></span>
                   <span className="w-0.75 bg-teal-500 h-4 animate-[bounce_0.8s_infinite_200ms] rounded-full"></span>
                   <span className="w-0.75 bg-sky-500 h-3 animate-[bounce_0.8s_infinite_300ms] rounded-full"></span>
                   <span className="w-0.75 bg-emerald-500 h-1 animate-[bounce_0.8s_infinite_400ms] rounded-full"></span>
@@ -281,10 +313,10 @@ export default function VoiceRemindersPage() {
               )}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
               {/* Rate */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-500 uppercase">Spoken Pace (Speed)</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase">Spoken Pace (Speed)</label>
                 <div className="flex items-center gap-3">
                   <input
                     suppressHydrationWarning
@@ -296,14 +328,14 @@ export default function VoiceRemindersPage() {
                     onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
                     className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
-                  <span className="text-xs font-bold text-slate-700 w-10 text-right">{Math.round(speechRate * 100)}%</span>
+                  <span className="text-xs font-bold text-slate-900 w-10 text-right">{Math.round(speechRate * 100)}%</span>
                 </div>
-                <p className="text-[10px] text-slate-400 leading-normal">Configured for elder comprehension.</p>
+                <p className="text-[10px] text-slate-800 leading-normal">Configured for elder comprehension.</p>
               </div>
 
               {/* Pitch */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-500 uppercase">Speaker Frequency (Pitch)</label>
+                <label className="block text-xs font-bold text-slate-800 uppercase">Speaker Frequency (Pitch)</label>
                 <div className="flex items-center gap-3">
                   <input
                     suppressHydrationWarning
@@ -315,9 +347,34 @@ export default function VoiceRemindersPage() {
                     onChange={(e) => setSpeechPitch(parseFloat(e.target.value))}
                     className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
-                  <span className="text-xs font-bold text-slate-700 w-10 text-right">{Math.round(speechPitch * 100)}%</span>
+                  <span className="text-xs font-bold text-slate-900 w-10 text-right">{Math.round(speechPitch * 100)}%</span>
                 </div>
-                <p className="text-[10px] text-slate-400 leading-normal">Calibrated for friendly tone ranges.</p>
+                <p className="text-[10px] text-slate-800 leading-normal">Calibrated for friendly tone ranges.</p>
+              </div>
+
+              {/* Language Selector */}
+              <div className="space-y-2">
+                <label htmlFor="rem-lang" className="block text-xs font-bold text-slate-800 uppercase">Reminder Language</label>
+                <select
+                  id="rem-lang"
+                  value={activeProfile.language || "English"}
+                  onChange={(e) => {
+                    updateProfile(activeProfile.id, { language: e.target.value });
+                  }}
+                  className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-xl p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
+                >
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Telugu">Telugu</option>
+                  <option value="Kannada">Kannada</option>
+                  <option value="Malayalam">Malayalam</option>
+                  <option value="Marathi">Marathi</option>
+                  <option value="Bengali">Bengali</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                </select>
+                <p className="text-[10px] text-slate-800 leading-normal">Updates target speech synthesis voice.</p>
               </div>
 
               {/* Test button */}
@@ -326,24 +383,47 @@ export default function VoiceRemindersPage() {
                   suppressHydrationWarning
                   onClick={playGeneralTest}
                   disabled={isPlaying !== null}
-                  className="w-full py-2.5 px-4 border border-slate-200 text-xs font-bold text-slate-700 bg-slate-55 hover:bg-slate-100 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                  className="w-full py-2.5 px-4 border border-slate-300 text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                 >
-                  <Volume2 className="h-4 w-4 text-teal-650" />
+                  <Volume2 className="h-4 w-4 text-teal-700" />
                   <span>Test Female Voice</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Live Preview Panel */}
+            <div className="mt-6 border-t border-slate-100 pt-5 space-y-4">
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Live Synthesizer Preview</h3>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="font-bold text-slate-800">Selected Language:</span>
+                    <span className="font-black text-slate-900 capitalize">{activeProfile.language || "English"}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="font-bold text-slate-800">Detected Browser Voice:</span>
+                    <span className="font-black text-teal-700 truncate max-w-[200px]" title={detectedVoiceName}>
+                      {detectedVoiceName}
+                    </span>
+                  </div>
+                </div>
+                <div className="bg-white border border-slate-200 p-3 rounded-lg text-[11px] text-slate-800 italic leading-relaxed space-y-1">
+                  <span className="block text-[9px] font-bold text-slate-800 uppercase not-italic">Reminder Text Preview</span>
+                  <p>"{previewText}"</p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Today's Schedule Announcers */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-805 flex items-center gap-1.5">
-              <Clock className="h-5 w-5 text-teal-650" />
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
+              <Clock className="h-5 w-5 text-teal-700" />
               Medication Announcement Deck
             </h2>
 
             {todayDoses.length === 0 ? (
-              <div className="text-center py-10 text-slate-400 italic text-xs">
+              <div className="text-center py-10 text-slate-800 italic text-xs">
                 No medications configured on the current schedule for {activeProfile.name}.
               </div>
             ) : (
@@ -354,15 +434,15 @@ export default function VoiceRemindersPage() {
                   return (
                     <div key={uniqKey} className="py-4 flex items-center justify-between gap-4 first:pt-0 last:pb-0 hover:bg-slate-50/50 rounded-lg transition-colors px-1">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-655 flex items-center justify-center shrink-0 border border-teal-100">
+                        <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-100">
                           <Pill className="h-5 w-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-slate-800">{dose.name}</h4>
-                          <p className="text-xs text-slate-500 capitalize">
+                          <h4 className="text-sm font-bold text-slate-900">{dose.name}</h4>
+                          <p className="text-xs text-slate-800 font-medium capitalize">
                             {dose.timeSlot} Routine • {dose.dosage} at {formatTime12h(dose.exactTime)}
                           </p>
-                          {dose.notes && <p className="text-[10px] text-slate-400 italic mt-0.5">★ Direction: {dose.notes}</p>}
+                          {dose.notes && <p className="text-[10px] text-slate-800 italic mt-0.5">★ Direction: {dose.notes}</p>}
                         </div>
                       </div>
 
@@ -420,7 +500,7 @@ export default function VoiceRemindersPage() {
               <button 
                 suppressHydrationWarning
                 onClick={() => setIsAudioMuted(!isAudioMuted)} 
-                className="text-teal-455 hover:underline font-semibold"
+                className="text-teal-700 hover:text-teal-900 font-bold hover:underline"
               >
                 {isAudioMuted ? "Unmute Spoken Cues" : "Mute Spoken Cues"}
               </button>
@@ -445,10 +525,10 @@ export default function VoiceRemindersPage() {
                     {activeProfile.name}, your medication is due now.
                   </h4>
                   
-                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-150 text-xs text-slate-700 mt-2 space-y-1">
-                    <p>💊 <strong className="text-slate-800">{activeAlert.name}</strong> • {activeAlert.dosage}</p>
-                    <p>🕒 Scheduled Slot: <span className="capitalize font-semibold">{activeAlert.timeSlot} routine</span> ({formatTime12h(activeAlert.exactTime)})</p>
-                    {activeAlert.notes && <p className="italic text-slate-400 text-[10px] pt-1">★ Note: {activeAlert.notes}</p>}
+                  <div className="bg-slate-55 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-900 mt-2 space-y-1">
+                    <p>💊 <strong className="text-slate-950">{activeAlert.name}</strong> • {activeAlert.dosage}</p>
+                    <p>🕒 Scheduled Slot: <span className="capitalize font-bold">{activeAlert.timeSlot} routine</span> ({formatTime12h(activeAlert.exactTime)})</p>
+                    {activeAlert.notes && <p className="italic text-slate-700 text-[10px] pt-1">★ Note: {activeAlert.notes}</p>}
                   </div>
                 </div>
               </div>
@@ -465,7 +545,7 @@ export default function VoiceRemindersPage() {
                 <button
                   suppressHydrationWarning
                   onClick={() => setIsAlertVisible(false)}
-                  className="py-2 px-3 text-xs font-semibold text-slate-550 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
+                  className="py-2 px-3 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
                 >
                   Snooze
                 </button>

@@ -11,20 +11,27 @@ import {
   Heart,
   TrendingUp,
   AlertCircle,
-  UserCheck
+  UserCheck,
+  Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { formatTime12h } from "@/components/ReminderEngine";
 
 export default function DoctorReportPage() {
-  const { activeProfile, medicines, trackingLogs, symptomLogs } = useAppState();
+  const { activeProfile, medicines, trackingLogs, symptomLogs, consultationSummaries, deleteConsultationSummary } = useAppState();
 
-  const [currentDate, setCurrentDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [currentDate, setCurrentDate] = useState("2026-06-20");
+  const [mounted, setMounted] = useState(false);
   
   // Interactive consultation notes
   const [clinicalAssessment, setClinicalAssessment] = useState("");
   const [dosageAdjustments, setDosageAdjustments] = useState("");
   const [physicianSignature, setPhysicianSignature] = useState("Dr. Sarah Alcott, MD");
+
+  useEffect(() => {
+    setMounted(true);
+    setCurrentDate(new Date().toISOString().split("T")[0]);
+  }, []);
 
   // Reset default comments if the patient profile changes
   useEffect(() => {
@@ -38,6 +45,17 @@ export default function DoctorReportPage() {
     }
   }, [activeProfile]);
 
+  if (!mounted) {
+    return (
+      <div className="max-w-xl mx-auto py-24 text-center space-y-4">
+        <div className="w-10 h-10 rounded-full bg-teal-50 border border-teal-100 text-teal-650 flex items-center justify-center mx-auto animate-spin">
+          <Loader2 className="h-5 w-5" />
+        </div>
+        <p className="text-xs text-slate-800 font-bold">Loading clinical report...</p>
+      </div>
+    );
+  }
+
   // Safety check if profile is loaded
   if (!activeProfile) {
     return (
@@ -47,7 +65,7 @@ export default function DoctorReportPage() {
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <p className="text-slate-800 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to generate clinical adherence reports.
           </p>
         </div>
@@ -153,13 +171,13 @@ export default function DoctorReportPage() {
         <div className="lg:col-span-4 space-y-6 print:hidden">
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-              <Stethoscope className="h-4.5 w-4.5 text-teal-650" />
+              <Stethoscope className="h-4.5 w-4.5 text-teal-700" />
               Doctor Consultation Notes
             </h3>
             
             {/* Observation Notes */}
             <div className="space-y-1">
-              <label htmlFor="assessment" className="block text-[10px] font-bold text-slate-500 uppercase">
+              <label htmlFor="assessment" className="block text-[10px] font-bold text-slate-800 uppercase">
                 Clinical Observation Notes
               </label>
               <textarea
@@ -168,13 +186,13 @@ export default function DoctorReportPage() {
                 value={clinicalAssessment}
                 onChange={(e) => setClinicalAssessment(e.target.value)}
                 placeholder="Write specific observations..."
-                className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
+                className="w-full text-xs font-semibold text-slate-800 border border-slate-400 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
               />
             </div>
 
             {/* Adjustments */}
             <div className="space-y-1">
-              <label htmlFor="adjust" className="block text-[10px] font-bold text-slate-500 uppercase">
+              <label htmlFor="adjust" className="block text-[10px] font-bold text-slate-800 uppercase">
                 Directions / Adjustments
               </label>
               <textarea
@@ -183,13 +201,13 @@ export default function DoctorReportPage() {
                 value={dosageAdjustments}
                 onChange={(e) => setDosageAdjustments(e.target.value)}
                 placeholder="Write medication adjustments..."
-                className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
+                className="w-full text-xs font-semibold text-slate-800 border border-slate-400 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
               />
             </div>
 
             {/* Signature */}
             <div className="space-y-1">
-              <label htmlFor="sig" className="block text-[10px] font-bold text-slate-500 uppercase">
+              <label htmlFor="sig" className="block text-[10px] font-bold text-slate-800 uppercase">
                 Physician Signature Name
               </label>
               <input
@@ -197,14 +215,14 @@ export default function DoctorReportPage() {
                 id="sig"
                 value={physicianSignature}
                 onChange={(e) => setPhysicianSignature(e.target.value)}
-                className="w-full text-xs font-semibold text-slate-800 border border-slate-350 rounded-lg p-2 bg-white focus:outline-hidden focus:border-teal-500"
+                className="w-full text-xs font-semibold text-slate-800 border border-slate-400 rounded-lg p-2 bg-white focus:outline-hidden focus:border-teal-500"
                 required
               />
             </div>
 
             <button
               onClick={handlePrint}
-              className="w-full py-2.5 text-xs font-bold text-slate-700 bg-slate-55/60 hover:bg-slate-100 border border-slate-200 rounded-lg transition-all text-center flex items-center justify-center gap-1"
+              className="w-full py-2.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-all text-center flex items-center justify-center gap-1"
             >
               <Printer className="h-3.5 w-3.5" />
               <span>Preview Print Layout</span>
@@ -222,66 +240,66 @@ export default function DoctorReportPage() {
                 <Stethoscope className="h-6 w-6 text-teal-700 print:text-slate-850 shrink-0" />
                 <h2 className="text-xl font-black uppercase tracking-tight">Metro General Health Alliance</h2>
               </div>
-              <p className="text-xs font-bold text-teal-805 print:text-slate-600 mt-1 uppercase tracking-wide">
+              <p className="text-xs font-bold text-teal-900 print:text-slate-800 mt-1 uppercase tracking-wide">
                 Department of Geriatric Compliance & Care Coordination
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">
+              <p className="text-[10px] text-slate-800 mt-0.5">
                 400 Metro Parkway, Suite 400 • Helpline: 1-800-555-0199
               </p>
             </div>
             <div className="text-right">
-              <span className="text-[9px] bg-slate-100 border border-slate-200 text-slate-650 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider block mb-1">
+              <span className="text-[9px] bg-slate-100 border border-slate-400 text-slate-900 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider block mb-1">
                 Clinical Health Record
               </span>
-              <p className="text-[10px] text-slate-500">Record ID: <strong>#CC-{activeProfile.id.toUpperCase().split("-")[1] || "7281"}</strong></p>
-              <p className="text-[10px] text-slate-500">Date: <strong>{new Date(currentDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</strong></p>
+              <p className="text-[10px] text-slate-800 font-semibold">Record ID: <strong>#CC-{activeProfile.id.toUpperCase().split("-")[1] || "7281"}</strong></p>
+              <p className="text-[10px] text-slate-800 font-semibold">Date: <strong>{new Date(currentDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</strong></p>
             </div>
           </div>
 
           <div className="text-center">
-            <h1 className="text-lg font-black uppercase text-slate-800 tracking-wider bg-slate-50 border border-slate-150 py-1.5 rounded-md">
+            <h1 className="text-lg font-black uppercase text-slate-800 tracking-wider bg-slate-50 border border-slate-300 py-1.5 rounded-md">
               Medication Adherence & Compliance Summary
             </h1>
           </div>
 
           {/* Patient Details */}
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1">Patient Details</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6 text-xs bg-slate-50/50 p-4 rounded-lg border border-slate-150">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">Patient Details</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6 text-xs bg-slate-50/50 p-4 rounded-lg border border-slate-300">
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Patient Name</span>
-                <strong className="text-sm text-slate-800">{activeProfile.name}</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Patient Name</span>
+                <strong className="text-sm text-slate-900">{activeProfile.name}</strong>
               </div>
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Age & Gender</span>
-                <strong className="text-slate-800">{activeProfile.age} Years • {activeProfile.gender}</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Age & Gender</span>
+                <strong className="text-slate-900">{activeProfile.age} Years • {activeProfile.gender}</strong>
               </div>
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Reporting Period</span>
-                <strong className="text-slate-850">Current Cycle Adherence</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Reporting Period</span>
+                <strong className="text-slate-900">Current Cycle Adherence</strong>
               </div>
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Caregiver Contact</span>
-                <strong className="text-slate-800">{activeProfile.caregiverName}</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Caregiver Contact</span>
+                <strong className="text-slate-900">{activeProfile.caregiverName}</strong>
               </div>
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Medical Diagnosis</span>
-                <strong className="text-slate-800">{activeProfile.condition}</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Medical Diagnosis</span>
+                <strong className="text-slate-900">{activeProfile.condition}</strong>
               </div>
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Compliance Rate</span>
-                <strong className="text-teal-850 font-bold">{rawCompliance}% Adherence Today</strong>
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Compliance Rate</span>
+                <strong className="text-teal-900 font-bold">{rawCompliance}% Adherence Today</strong>
               </div>
             </div>
           </div>
 
           {/* Active Prescription Schedule */}
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1">Active Prescription Schedule</h3>
-            <div className="overflow-x-auto border border-slate-200 rounded-lg">
-              <table className="min-w-full divide-y divide-slate-250 text-left text-xs">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">Active Prescription Schedule</h3>
+            <div className="overflow-x-auto border border-slate-300 rounded-lg">
+              <table className="min-w-full divide-y divide-slate-300 text-left text-xs">
                 <thead className="bg-slate-100">
-                  <tr className="divide-x divide-slate-200 font-bold text-slate-700">
+                  <tr className="divide-x divide-slate-300 font-bold text-slate-900">
                     <th scope="col" className="px-4 py-2">Medication</th>
                     <th scope="col" className="px-3 py-2">Dosage</th>
                     <th scope="col" className="px-3 py-2">Frequency</th>
@@ -289,16 +307,16 @@ export default function DoctorReportPage() {
                     <th scope="col" className="px-4 py-2">Instructions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
+                <tbody className="divide-y divide-slate-300 bg-white">
                   {medicines.filter(m => m.active).map((med) => {
                     const timesStr = med.reminderTimes.map(rt => `${rt.timeSlot} (${formatTime12h(rt.time)})`).join(", ");
                     return (
-                      <tr key={med.id} className="divide-x divide-slate-200 text-slate-700">
+                      <tr key={med.id} className="divide-x divide-slate-300 text-slate-900">
                         <td className="px-4 py-2 font-bold">{med.name}</td>
                         <td className="px-3 py-2">{med.dosage}</td>
                         <td className="px-3 py-2">{med.frequency}</td>
                         <td className="px-3 py-2 capitalize">{timesStr || med.exactTime}</td>
-                        <td className="px-4 py-2 italic text-slate-550">{med.notes || "None"}</td>
+                        <td className="px-4 py-2 italic text-slate-800">{med.notes || "None"}</td>
                       </tr>
                     );
                   })}
@@ -309,16 +327,16 @@ export default function DoctorReportPage() {
 
           {/* Missed Doses logs */}
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1">Non-Adherence Log (Missed Doses)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">Non-Adherence Log (Missed Doses)</h3>
             {missedDosesList.length === 0 ? (
-              <div className="p-3 bg-emerald-50 border border-emerald-100 text-emerald-950 text-xs rounded-lg font-semibold flex items-center gap-1.5">
-                <UserCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs rounded-lg font-semibold flex items-center gap-1.5">
+                <UserCheck className="h-4 w-4 text-emerald-700 shrink-0" />
                 <span>No missed medication slots logged in reporting timeline. 100% compliance rate.</span>
               </div>
             ) : (
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-                  <thead className="bg-red-50 text-red-900">
+              <div className="border border-slate-300 rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-300 text-left text-xs">
+                  <thead className="bg-red-50 text-red-950">
                     <tr className="font-bold">
                       <th scope="col" className="px-4 py-2">Date</th>
                       <th scope="col" className="px-4 py-2">Medication</th>
@@ -326,13 +344,13 @@ export default function DoctorReportPage() {
                       <th scope="col" className="px-4 py-2 text-right">Adherence Alert</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 bg-white text-slate-700">
+                  <tbody className="divide-y divide-slate-300 bg-white text-slate-900">
                     {missedDosesList.map((log) => (
                       <tr key={log.id}>
                         <td className="px-4 py-2 font-semibold">{log.date}</td>
-                        <td className="px-4 py-2 font-bold text-red-955">{log.name}</td>
+                        <td className="px-4 py-2 font-bold text-red-900">{log.name}</td>
                         <td className="px-4 py-2 capitalize">{log.timeSlot} slot {log.time ? `(${formatTime12h(log.time)})` : ""}</td>
-                        <td className="px-4 py-2 text-right text-red-750 font-bold">Logged Missed Dosing</td>
+                        <td className="px-4 py-2 text-right text-red-800 font-bold">Logged Missed Dosing</td>
                       </tr>
                     ))}
                   </tbody>
@@ -343,51 +361,166 @@ export default function DoctorReportPage() {
 
           {/* Symptom logs section */}
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1">Symptom Journal & Caregiver Diaries</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">Symptom Journal & Caregiver Diaries</h3>
             {symptomLogs.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">No physical symptoms logged by patient or caregiver.</p>
+              <p className="text-xs text-slate-800 italic">No physical symptoms logged by patient or caregiver.</p>
             ) : (
               <div className="space-y-2">
                 {symptomLogs.map((log) => (
-                  <div key={log.id} className="border border-slate-150 p-3 rounded-lg bg-slate-50 flex justify-between text-xs text-slate-750">
+                  <div key={log.id} className="border border-slate-300 p-3 rounded-lg bg-slate-50 flex justify-between text-xs text-slate-900">
                     <div>
-                      <span className="text-slate-400 font-bold mr-2">[{log.date}]</span>
-                      <strong className="text-slate-700 font-semibold">{log.notes}</strong>
+                      <span className="text-slate-900 font-bold mr-2">[{log.date}]</span>
+                      <strong className="text-slate-900 font-bold">{log.notes}</strong>
                     </div>
-                    <span className="font-bold uppercase text-[9px] text-slate-500 shrink-0 capitalize">{log.severity} severity</span>
+                    <span className="font-bold uppercase text-[9px] text-slate-900 shrink-0 capitalize">{log.severity} severity</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
+          {/* Saved Doctor Consultations Section */}
+          <div className="space-y-4 pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">
+              Doctor Consultation & AI Clinical Summaries
+            </h3>
+            {(!consultationSummaries || consultationSummaries.length === 0) ? (
+              <p className="text-xs text-slate-800 italic">No saved AI consultation summaries exist for this patient profile.</p>
+            ) : (
+              <div className="space-y-6">
+                {consultationSummaries.map((cs) => {
+                  const isHigh = cs.summary.riskLevel.toLowerCase().includes("high") || cs.summary.riskLevel.toLowerCase().includes("severe");
+                  const isMedium = cs.summary.riskLevel.toLowerCase().includes("medium") || cs.summary.riskLevel.toLowerCase().includes("moderate");
+                  const riskBadgeColor = isHigh 
+                    ? "bg-rose-50 text-rose-900 border-rose-300" 
+                    : isMedium 
+                    ? "bg-amber-50 text-amber-900 border-amber-300" 
+                    : "bg-emerald-50 text-emerald-900 border-emerald-300";
+
+                  return (
+                    <div key={cs.id} className="border border-slate-300 rounded-xl p-5 bg-white space-y-4 shadow-sm relative">
+                      <div className="flex flex-wrap justify-between items-center gap-2 border-b border-slate-200 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-slate-900">
+                            📅 {new Date(cs.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                          <span className={`px-2 py-0.5 border rounded-md text-[10px] font-black uppercase tracking-wider ${riskBadgeColor}`}>
+                            {cs.summary.riskLevel} Risk
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (confirm("Are you sure you want to delete this consultation summary?")) {
+                              deleteConsultationSummary(cs.id);
+                            }
+                          }}
+                          className="text-[10px] text-slate-700 hover:text-red-500 transition-colors font-bold print:hidden"
+                        >
+                          Delete
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-slate-800 uppercase">Diagnosis</span>
+                          <strong className="text-xs text-slate-900 font-bold block bg-slate-50 px-3 py-2 rounded-lg border border-slate-300">
+                            {cs.summary.diagnosis}
+                          </strong>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-slate-800 uppercase">Follow-Up Date</span>
+                          <strong className="text-xs text-slate-900 font-bold block bg-slate-50 px-3 py-2 rounded-lg border border-slate-300">
+                            {cs.summary.followUpDate}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="block text-[10px] font-bold text-slate-600 uppercase">Medicines Mentioned</span>
+                        {cs.summary.medicinesMentioned && cs.summary.medicinesMentioned.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {cs.summary.medicinesMentioned.map((med, idx) => (
+                              <span key={idx} className="inline-flex bg-teal-50 border border-teal-100 text-teal-800 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                💊 {med}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-slate-800 italic">None logged</p>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-slate-800 uppercase">Instructions & Precautions</span>
+                          <p className="text-xs text-slate-850 leading-relaxed font-semibold bg-white p-3 rounded-lg border border-slate-300 whitespace-pre-line">
+                            {cs.summary.instructions}
+                          </p>
+                        </div>
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-slate-800 uppercase">Action Items</span>
+                          {cs.summary.actionItems && cs.summary.actionItems.length > 0 ? (
+                            <ul className="space-y-1 bg-white p-3 rounded-lg border border-slate-300">
+                              {cs.summary.actionItems.map((item, idx) => (
+                                <li key={idx} className="text-xs text-slate-850 flex items-start gap-1 font-semibold">
+                                  <span className="text-teal-600 text-xs select-none">✔</span>
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-xs text-slate-800 italic bg-white p-3 rounded-lg border border-slate-300">None</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="block text-[10px] font-bold text-slate-800 uppercase">Clinical Summary</span>
+                        <p className="text-xs text-slate-800 leading-relaxed font-semibold bg-white p-3 rounded-lg border border-slate-300">
+                          {cs.summary.summary}
+                        </p>
+                      </div>
+
+                      <details className="text-xs border border-slate-300 rounded-lg p-2.5 bg-slate-50 print:hidden">
+                        <summary className="font-bold text-slate-800 cursor-pointer hover:text-slate-900 select-none">View Original Audio Transcript</summary>
+                        <p className="text-[11px] text-slate-800 leading-relaxed whitespace-pre-line mt-2 italic font-semibold bg-white border border-slate-300 p-2.5 rounded-md">
+                          {cs.transcript}
+                        </p>
+                      </details>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Doctor Assessment Observations */}
           <div className="space-y-4 pt-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200 pb-1">Physician Assessment & Directions</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-300 pb-1">Physician Assessment & Directions</h3>
             
             <div className="space-y-4">
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Clinical Observations & Diagnostics</span>
-                <p className="text-xs text-slate-800 leading-relaxed font-serif whitespace-pre-line mt-1 bg-slate-50/20 p-3 rounded-lg border border-slate-150">
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Clinical Observations & Diagnostics</span>
+                <p className="text-xs text-slate-900 leading-relaxed font-serif whitespace-pre-line mt-1 bg-slate-50/20 p-3 rounded-lg border border-slate-300">
                   {clinicalAssessment || "No assessments logged."}
                 </p>
               </div>
 
               <div>
-                <span className="block font-bold text-slate-400 uppercase text-[9px]">Prescription Plan Modalities / Adjustments</span>
-                <p className="text-xs text-slate-800 leading-relaxed font-serif whitespace-pre-line mt-1 bg-slate-50/20 p-3 rounded-lg border border-slate-150">
+                <span className="block font-bold text-slate-800 uppercase text-[9px]">Prescription Plan Modalities / Adjustments</span>
+                <p className="text-xs text-slate-900 leading-relaxed font-serif whitespace-pre-line mt-1 bg-slate-50/20 p-3 rounded-lg border border-slate-300">
                   {dosageAdjustments || "No plan modifications logged."}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-xs pt-4 border-t border-dashed border-slate-200">
+              <div className="grid grid-cols-2 gap-4 text-xs pt-4 border-t border-dashed border-slate-300">
                 <div>
-                  <span className="block font-bold text-slate-400 uppercase text-[9px]">Next Clinical Appointment</span>
-                  <strong className="text-slate-800">{activeProfile.followUpDate}</strong>
+                  <span className="block font-bold text-slate-800 uppercase text-[9px]">Next Clinical Appointment</span>
+                  <strong className="text-slate-900">{activeProfile.followUpDate}</strong>
                 </div>
                 <div>
-                  <span className="block font-bold text-slate-400 uppercase text-[9px]">Primary Geriatric Specialist</span>
-                  <strong className="text-slate-800">{activeProfile.doctorName}</strong>
+                  <span className="block font-bold text-slate-800 uppercase text-[9px]">Primary Geriatric Specialist</span>
+                  <strong className="text-slate-900">{activeProfile.doctorName}</strong>
                 </div>
               </div>
             </div>
@@ -396,15 +529,15 @@ export default function DoctorReportPage() {
           {/* Signature block */}
           <div className="pt-12 flex justify-between items-end">
             <div className="text-xs">
-              <p className="text-slate-400 text-[10px] uppercase">Compliance Authority Badge</p>
-              <div className="flex items-center gap-1 text-teal-800 font-bold mt-1">
+              <p className="text-slate-800 text-[10px] uppercase">Compliance Authority Badge</p>
+              <div className="flex items-center gap-1 text-teal-900 font-bold mt-1">
                 <Heart className="h-4.5 w-4.5" />
                 <span>CareCompanion AI Secured</span>
               </div>
             </div>
             <div className="text-right w-64 border-t border-slate-850 pt-2 text-xs">
-              <span className="font-serif italic text-sm text-slate-800 block mb-1">{physicianSignature}</span>
-              <p className="text-slate-400 text-[9px] uppercase tracking-wide">Authorized Medical Signature Line</p>
+              <span className="font-serif italic text-sm text-slate-900 block mb-1">{physicianSignature}</span>
+              <p className="text-slate-800 text-[9px] uppercase tracking-wide">Authorized Medical Signature Line</p>
             </div>
           </div>
 

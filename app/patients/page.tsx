@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppState, PatientProfile } from "@/context/AppContext";
 import { 
@@ -26,6 +26,11 @@ export default function ProfilePage() {
     createProfile, 
     deleteProfile 
   } = useAppState();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Form states for creating a profile
   const [name, setName] = useState("");
@@ -84,6 +89,10 @@ export default function ProfilePage() {
     router.push("/dashboard");
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 flex-1 w-full space-y-8">
       {/* Header Banner with Gradient */}
@@ -109,7 +118,7 @@ export default function ProfilePage() {
               <UserCheck className="h-5.5 w-5.5 text-teal-600" />
               Select Active Account
             </h2>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{profiles.length} Accounts Registered</span>
+            <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">{profiles.length} Accounts Registered</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -131,31 +140,35 @@ export default function ProfilePage() {
                         <h3 className="text-xl font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
                           {profile.name}
                         </h3>
-                        <p className="text-xs text-slate-500 mt-0.5">{profile.gender} • Age {profile.age}</p>
+                        <p className="text-xs text-slate-700 mt-0.5">{profile.gender} • Age {profile.age}</p>
                       </div>
                       <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-md ${
                         isActive 
                           ? "bg-teal-600 text-white" 
-                          : "bg-slate-100 text-slate-400"
+                          : "bg-slate-100 text-slate-600"
                       }`}>
                         {isActive ? "Active" : "Select"}
                       </span>
                     </div>
 
                     {/* Stats */}
-                    <div className="border-t border-b border-slate-100 py-3 space-y-2 text-xs text-slate-600">
+                    <div className="border-t border-b border-slate-100 py-3 space-y-2 text-xs text-slate-800">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Medical Condition</span>
-                        <strong className="text-slate-700 block text-xs truncate mt-0.5">{profile.condition}</strong>
+                        <span className="text-[10px] uppercase font-bold text-slate-800 block">Medical Condition</span>
+                        <strong className="text-slate-900 block text-xs truncate mt-0.5">{profile.condition}</strong>
                       </div>
                       <div className="flex justify-between gap-4">
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Caregiver</span>
-                          <strong className="text-slate-700 mt-0.5 block">{profile.caregiverName}</strong>
+                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Caregiver</span>
+                          <strong className="text-slate-900 mt-0.5 block">{profile.caregiverName}</strong>
                         </div>
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Alert Style</span>
-                          <strong className="text-slate-700 mt-0.5 block capitalize">{profile.reminderStyle}</strong>
+                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Language</span>
+                          <strong className="text-slate-900 mt-0.5 block capitalize">{profile.language || "English"}</strong>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Alert Style</span>
+                          <strong className="text-slate-900 mt-0.5 block capitalize">{profile.reminderStyle}</strong>
                         </div>
                       </div>
                     </div>
@@ -164,6 +177,7 @@ export default function ProfilePage() {
                     <div className="flex gap-2 justify-between items-center">
                       <button
                         onClick={() => handleSelect(profile.id)}
+                        suppressHydrationWarning
                         className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 ${
                           isActive 
                             ? "bg-teal-600 text-white hover:bg-teal-700 shadow-xs" 
@@ -181,7 +195,8 @@ export default function ProfilePage() {
                               deleteProfile(profile.id);
                             }
                           }}
-                          className="p-2 text-slate-350 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                          suppressHydrationWarning
+                          className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
                           title="Delete Patient Record"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -204,7 +219,7 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h2 className="text-base font-bold text-slate-800">Register New Patient</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Create a distinct record for custom schedule configurations.</p>
+                <p className="text-xs text-slate-800 mt-0.5">Create a distinct record for custom schedule configurations.</p>
               </div>
             </div>
 
@@ -218,7 +233,7 @@ export default function ProfilePage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Full Name */}
                 <div className="space-y-1">
-                  <label htmlFor="fullname" className="block text-[10px] font-bold text-slate-500 uppercase">
+                  <label htmlFor="fullname" className="block text-[10px] font-bold text-slate-805 uppercase">
                     Full Name
                   </label>
                   <input
@@ -227,6 +242,7 @@ export default function ProfilePage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Mrs. Kamla, Mr. Ramesh"
+                    suppressHydrationWarning
                     className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
                     required
                   />
@@ -235,7 +251,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Age */}
                   <div className="space-y-1">
-                    <label htmlFor="age" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    <label htmlFor="age" className="block text-[10px] font-bold text-slate-805 uppercase">
                       Age
                     </label>
                     <input
@@ -244,6 +260,7 @@ export default function ProfilePage() {
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
                       placeholder="e.g. 72"
+                      suppressHydrationWarning
                       className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
                       required
                     />
@@ -251,13 +268,14 @@ export default function ProfilePage() {
 
                   {/* Gender */}
                   <div className="space-y-1">
-                    <label htmlFor="gender" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    <label htmlFor="gender" className="block text-[10px] font-bold text-slate-805 uppercase">
                       Gender
                     </label>
                     <select
                       id="gender"
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
+                      suppressHydrationWarning
                       className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
                     >
                       <option value="Male">Male</option>
@@ -269,7 +287,7 @@ export default function ProfilePage() {
 
                 {/* Medical Condition */}
                 <div className="space-y-1">
-                  <label htmlFor="condition" className="block text-[10px] font-bold text-slate-500 uppercase">
+                  <label htmlFor="condition" className="block text-[10px] font-bold text-slate-805 uppercase">
                     Medical Condition / Notes
                   </label>
                   <input
@@ -278,6 +296,7 @@ export default function ProfilePage() {
                     value={condition}
                     onChange={(e) => setCondition(e.target.value)}
                     placeholder="e.g. Blood Pressure, Diabetes, Post-op Recovery"
+                    suppressHydrationWarning
                     className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
                     required
                   />
@@ -285,7 +304,7 @@ export default function ProfilePage() {
 
                 {/* Caregiver Name */}
                 <div className="space-y-1">
-                  <label htmlFor="caregiver" className="block text-[10px] font-bold text-slate-500 uppercase">
+                  <label htmlFor="caregiver" className="block text-[10px] font-bold text-slate-805 uppercase">
                     Caregiver Name (Optional)
                   </label>
                   <input
@@ -294,6 +313,7 @@ export default function ProfilePage() {
                     value={caregiverName}
                     onChange={(e) => setCaregiverName(e.target.value)}
                     placeholder="e.g. Anil, Priya"
+                    suppressHydrationWarning
                     className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
                   />
                 </div>
@@ -301,28 +321,39 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Language */}
                   <div className="space-y-1">
-                    <label htmlFor="language" className="block text-[10px] font-bold text-slate-500 uppercase">
-                      Language (Optional)
+                    <label htmlFor="language" className="block text-[10px] font-bold text-slate-805 uppercase">
+                      Reminder Language
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="language"
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
-                      placeholder="e.g. English, Spanish"
+                      suppressHydrationWarning
                       className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
-                    />
+                    >
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                      <option value="Tamil">Tamil</option>
+                      <option value="Telugu">Telugu</option>
+                      <option value="Kannada">Kannada</option>
+                      <option value="Malayalam">Malayalam</option>
+                      <option value="Marathi">Marathi</option>
+                      <option value="Bengali">Bengali</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="French">French</option>
+                    </select>
                   </div>
 
                   {/* Reminder Style */}
                   <div className="space-y-1">
-                    <label htmlFor="rem-style" className="block text-[10px] font-bold text-slate-500 uppercase">
+                    <label htmlFor="rem-style" className="block text-[10px] font-bold text-slate-805 uppercase">
                       Reminder Style
                     </label>
                     <select
                       id="rem-style"
                       value={reminderStyle}
                       onChange={(e) => setReminderStyle(e.target.value as any)}
+                      suppressHydrationWarning
                       className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden"
                     >
                       <option value="both">Both (Voice & Popup)</option>
@@ -334,6 +365,7 @@ export default function ProfilePage() {
 
                 <button
                   type="submit"
+                  suppressHydrationWarning
                   className="w-full py-3 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-sm hover:shadow-md transition-all text-center flex items-center justify-center gap-1.5"
                 >
                   <UserPlus className="h-4 w-4" />

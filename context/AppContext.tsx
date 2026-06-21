@@ -15,6 +15,7 @@ export interface PatientProfile {
   clinicName: string;
   precautions: string;
   followUpDate: string;
+  caregiverRemarks?: string;
 }
 
 export interface ReminderTime {
@@ -36,6 +37,13 @@ export interface Medicine {
   startDate: string; // YYYY-MM-DD
   notes: string;
   active: boolean;
+  originalOcrData?: {
+    name?: string;
+    dosage?: string;
+    exactTime?: string;
+    duration?: number;
+    notes?: string;
+  };
 }
 
 export interface TrackingLog {
@@ -94,6 +102,24 @@ export interface CaregiverAlert {
   exactTime: string;
 }
 
+export interface ConsultationSummaryData {
+  diagnosis: string;
+  medicinesMentioned: string[];
+  instructions: string;
+  actionItems: string[];
+  riskLevel: string;
+  followUpDate: string;
+  summary: string;
+}
+
+export interface ConsultationSummary {
+  id: string;
+  patientId: string;
+  transcript: string;
+  summary: ConsultationSummaryData;
+  createdAt: string;
+}
+
 interface AppContextType {
   profiles: PatientProfile[];
   activeProfileId: string | null;
@@ -104,7 +130,9 @@ interface AppContextType {
   allTrackingLogs: TrackingLog[]; // Full list
   symptomLogs: SymptomLog[]; // Filtered by activeProfileId
   allSymptomLogs: SymptomLog[]; // Full list
-  
+  consultationSummaries: ConsultationSummary[]; // Filtered by activeProfileId
+  allConsultationSummaries: ConsultationSummary[]; // Full list
+
   // Reminder States
   activeReminders: ActiveReminder[];
   reminderHistory: ReminderHistoryItem[];
@@ -123,6 +151,8 @@ interface AppContextType {
   resetLogStatus: (medicineId: string, date: string, timeSlot: string) => void;
   addSymptomLog: (log: Omit<SymptomLog, "id" | "patientId">) => void;
   deleteSymptomLog: (id: string) => void;
+  addConsultationSummary: (summary: Omit<ConsultationSummary, "id" | "patientId" | "createdAt">) => void;
+  deleteConsultationSummary: (id: string) => void;
   selectProfile: (id: string) => void;
   createProfile: (profile: Omit<PatientProfile, "id">) => void;
   updateProfile: (id: string, updated: Partial<PatientProfile>) => void;
@@ -168,6 +198,7 @@ const defaultProfiles: PatientProfile[] = [
     clinicName: "Metro Health Cardiology Clinic",
     precautions: "Maintain low sodium diet, avoid refined sugars, and walk 30 minutes daily.",
     followUpDate: "2026-07-15",
+    caregiverRemarks: "Patient has been compliant with salt restriction. Reports mild afternoon fatigue.",
   },
   {
     id: "profile-kamla",
@@ -182,6 +213,7 @@ const defaultProfiles: PatientProfile[] = [
     clinicName: "Endocrinology Care Center",
     precautions: "Check blood glucose twice daily. Avoid high glycemic load foods.",
     followUpDate: "2026-07-20",
+    caregiverRemarks: "Checking glucose diligently. Walking daily in the park.",
   }
 ];
 
@@ -349,6 +381,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [allMedicines, setAllMedicines] = useState<Medicine[]>(defaultMedicines);
   const [allTrackingLogs, setAllTrackingLogs] = useState<TrackingLog[]>(defaultLogs);
   const [allSymptomLogs, setAllSymptomLogs] = useState<SymptomLog[]>(defaultSymptomLogs);
+  const [allConsultationSummaries, setAllConsultationSummaries] = useState<ConsultationSummary[]>([]);
   
   // Reminder States
   const [activeReminders, setActiveReminders] = useState<ActiveReminder[]>([]);
@@ -368,6 +401,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const storedMeds = localStorage.getItem("cc_allMedicines");
       const storedLogs = localStorage.getItem("cc_allTrackingLogs");
       const storedSymptoms = localStorage.getItem("cc_allSymptomLogs");
+      const storedConsultationSummaries = localStorage.getItem("cc_allConsultationSummaries");
 
       const storedActiveReminders = localStorage.getItem("cc_activeReminders");
       const storedReminderHistory = localStorage.getItem("cc_reminderHistory");
@@ -378,6 +412,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (storedActiveId) setActiveProfileId(JSON.parse(storedActiveId));
       if (storedLogs) setAllTrackingLogs(JSON.parse(storedLogs));
       if (storedSymptoms) setAllSymptomLogs(JSON.parse(storedSymptoms));
+      if (storedConsultationSummaries) setAllConsultationSummaries(JSON.parse(storedConsultationSummaries));
 
       if (storedActiveReminders) setActiveReminders(JSON.parse(storedActiveReminders));
       if (storedReminderHistory) setReminderHistory(JSON.parse(storedReminderHistory));
@@ -525,6 +560,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isHydrated) return;
+    localStorage.setItem("cc_allConsultationSummaries", JSON.stringify(allConsultationSummaries));
+  }, [allConsultationSummaries, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
     localStorage.setItem("cc_activeReminders", JSON.stringify(activeReminders));
   }, [activeReminders, isHydrated]);
 
@@ -550,6 +590,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const medicines = allMedicines.filter(m => m.patientId === activeProfileId);
   const trackingLogs = allTrackingLogs.filter(l => l.patientId === activeProfileId);
   const symptomLogs = allSymptomLogs.filter(s => s.patientId === activeProfileId);
+  const consultationSummaries = allConsultationSummaries.filter(s => s.patientId === activeProfileId);
 
   // Profile management
   const selectProfile = (id: string) => {
@@ -578,6 +619,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setAllMedicines(prev => prev.filter(m => m.patientId !== id));
     setAllTrackingLogs(prev => prev.filter(l => l.patientId !== id));
     setAllSymptomLogs(prev => prev.filter(s => s.patientId !== id));
+    setAllConsultationSummaries(prev => prev.filter(s => s.patientId !== id));
     if (activeProfileId === id) {
       setActiveProfileId(profiles.find(p => p.id !== id)?.id || null);
     }
@@ -815,6 +857,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setAllSymptomLogs((prev) => prev.filter((log) => log.id !== id));
   };
 
+  // Consultation management
+  const addConsultationSummary = (summary: Omit<ConsultationSummary, "id" | "patientId" | "createdAt">) => {
+    if (!activeProfileId) return;
+    const newSummary: ConsultationSummary = {
+      ...summary,
+      id: generateUniqueId("cs"),
+      patientId: activeProfileId,
+      createdAt: new Date().toISOString(),
+    };
+    setAllConsultationSummaries((prev) => [newSummary, ...prev]);
+  };
+
+  const deleteConsultationSummary = (id: string) => {
+    setAllConsultationSummaries((prev) => prev.filter((s) => s.id !== id));
+  };
+
   const clearAlertsForPatient = (patientId: string) => {
     setCaregiverAlerts(prev => prev.filter(alert => alert.patientId !== patientId));
   };
@@ -831,6 +889,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         allTrackingLogs,
         symptomLogs,
         allSymptomLogs,
+        consultationSummaries,
+        allConsultationSummaries,
         
         activeReminders,
         reminderHistory,
@@ -848,6 +908,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         resetLogStatus,
         addSymptomLog,
         deleteSymptomLog,
+        addConsultationSummary,
+        deleteConsultationSummary,
         selectProfile,
         createProfile,
         updateProfile,

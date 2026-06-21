@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CareBridge AI
+
+CareBridge AI is an AI-powered elder care and medication management platform designed to help elderly patients and their caregivers stay on top of medicine schedules. By combining modern AI vision capabilities with browser speech features, the platform enables seamless uploading of physical doctor prescriptions, translates them into precise medicine reminders with customizable timeslots, and reads out clear, friendly voice alerts in natural female voices.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up and run the project locally:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/manohhar2006-bit/carecompanion-AI.git
+   cd carecompanion-AI
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Configure environment variables:**
+   Copy the example environment configuration to create your local environment file:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   Open the `.env.local` file and add your real API keys:
+   ```env
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-To learn more about Next.js, take a look at the following resources:
+## Key Dependencies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework & Language**: Next.js (App Router), React, TypeScript
+- **Styling**: Tailwind CSS
+- **Prescription OCR**: Google Gemini Vision API (gemini-2.5-flash)
+- **Voice Reminders**: Browser Web Speech API (SpeechSynthesis)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## What's Real vs. Simulated
 
-## Deploy on Vercel
+To help you understand the current capabilities of the application:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Prescription OCR (Real)**: Uses the live Google Gemini Vision API (gemini-2.5-flash) to extract medication details, dosages, frequencies, and duration directly from uploaded prescription images.
+- **Voice Reminders (Real)**: Uses the browser's native Speech Synthesis API to read out personalized care reminders using the clearest and most friendly female voice available.
+- **Caregiver SMS & Phone Alerts (Simulated)**: Notifications and call alerts sent to caregivers are simulated in-app on the Caregiver Dashboard. There is currently no active Twilio or telecom carrier integration.
+- **Persistence (Simulated)**: Application data (such as patients, scheduled medicines, and reminder configurations) is persisted directly in the browser's `localStorage`. No backend database is connected.

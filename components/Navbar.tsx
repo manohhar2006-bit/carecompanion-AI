@@ -11,6 +11,11 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const { activeProfile } = useAppState();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Internal routes of the application
   const isInternalRoute = [
@@ -19,7 +24,8 @@ export default function Navbar() {
     "/upload",
     "/reminders",
     "/caregiver",
-    "/report"
+    "/report",
+    "/consultation"
   ].some((path) => pathname.startsWith(path));
 
   // Determine navigation menu items dynamically
@@ -31,6 +37,7 @@ export default function Navbar() {
         { name: "Voice Reminders", href: "/reminders" },
         { name: "Caregiver Dashboard", href: "/caregiver" },
         { name: "Doctor Reports", href: "/report" },
+        { name: "Consultation Summarizer", href: "/consultation" },
       ]
     : [
         { name: "Home", href: "/#hero", sectionId: "hero" },
@@ -107,7 +114,7 @@ export default function Navbar() {
             </Link>
 
             {/* Active patient badge only visible when inside application */}
-            {isInternalRoute && (
+            {isInternalRoute && mounted && (
               activeProfile ? (
                 <Link 
                   href="/patients" 
@@ -152,7 +159,7 @@ export default function Navbar() {
             {isInternalRoute ? (
               <Link
                 href="/"
-                className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full transition-all duration-200"
+                className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full transition-all duration-200"
               >
                 Exit App
               </Link>
@@ -171,7 +178,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus:outline-hidden"
+              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:outline-hidden"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -186,8 +193,8 @@ export default function Navbar() {
       {isOpen && (
         <div className="xl:hidden border-t border-slate-100 bg-white" id="mobile-menu">
           <div className="space-y-1 px-2 pb-3 pt-2">
-            {isInternalRoute && activeProfile && (
-              <div className="px-3 py-2 text-xs font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md m-2 flex items-center justify-between">
+            {isInternalRoute && mounted && activeProfile && (
+              <div className="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-md m-2 flex items-center justify-between">
                 <span>Current Patient: {activeProfile.name}</span>
                 <Link href="/patients" onClick={() => setIsOpen(false)} className="text-teal-600 hover:underline">Change</Link>
               </div>

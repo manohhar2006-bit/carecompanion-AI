@@ -23,7 +23,7 @@ function AddMedicineForm() {
         </div>
         <div className="space-y-2">
           <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
+          <p className="text-slate-800 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to log prescriptions.
           </p>
         </div>
@@ -160,7 +160,7 @@ function AddMedicineForm() {
 
     // Format legacy structures for backward compatibility
     const timeOfDay = Array.from(new Set(reminderTimesList.map(r => r.timeSlot)));
-    const sortedList = [...reminderTimesList].sort((a, b) => a.time.localeCompare(b.time));
+    const sortedList = [...reminderTimesList].sort((a, b) => (a.time || "").localeCompare(b.time || ""));
     const exactTime = sortedList.length > 0 ? sortedList[0].time : "08:00";
 
     const medData = {
@@ -244,7 +244,7 @@ function AddMedicineForm() {
                   className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                   required
                 />
-                <p className="text-xs text-slate-400">Include brand name or chemical identifier.</p>
+                <p className="text-xs text-slate-800">Include brand name or chemical identifier.</p>
               </div>
 
               {/* Dosage */}
@@ -261,7 +261,7 @@ function AddMedicineForm() {
                   className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                   required
                 />
-                <p className="text-xs text-slate-400">Specify weight or quantity to take per slot.</p>
+                <p className="text-xs text-slate-800">Specify weight or quantity to take per slot.</p>
               </div>
 
               {/* Frequency */}
@@ -281,7 +281,7 @@ function AddMedicineForm() {
                   <option value="Weekly">Weekly</option>
                   <option value="As Needed (PRN)">As Needed (PRN)</option>
                 </select>
-                <p className="text-xs text-slate-400">How regularly this medicine is scheduled.</p>
+                <p className="text-xs text-slate-800">How regularly this medicine is scheduled.</p>
               </div>
 
               {/* Duration */}
@@ -299,7 +299,7 @@ function AddMedicineForm() {
                   min="1"
                   required
                 />
-                <p className="text-xs text-slate-400">Total days before prescription refilling.</p>
+                <p className="text-xs text-slate-800">Total days before prescription refilling.</p>
               </div>
             </div>
 
@@ -310,7 +310,7 @@ function AddMedicineForm() {
                   <Clock className="h-5.5 w-5.5 text-teal-650" />
                   Configure Scheduled Reminder Times
                 </h3>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-[11px] text-slate-800 mt-0.5">
                   Add multiple routine slots with their exact trigger times. Voice cues announce at these moments.
                 </p>
               </div>
@@ -318,7 +318,7 @@ function AddMedicineForm() {
               {/* Input row */}
               <div className="flex flex-col sm:flex-row gap-4 items-end bg-white border border-slate-250 p-4 rounded-xl shadow-2xs">
                 <div className="flex-1 space-y-1.5 w-full">
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Routine Slot</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase">Routine Slot</label>
                   <select
                     value={slotInput}
                     onChange={(e) => handleSlotChange(e.target.value as any)}
@@ -332,7 +332,7 @@ function AddMedicineForm() {
                 </div>
                 
                 <div className="flex-1 space-y-1.5 w-full">
-                  <label className="block text-xs font-bold text-slate-500 uppercase">Exact Reminder Time</label>
+                  <label className="block text-xs font-bold text-slate-800 uppercase">Exact Reminder Time</label>
                   <input
                     type="time"
                     value={timeInput}
@@ -354,9 +354,9 @@ function AddMedicineForm() {
 
               {/* Added times list */}
               <div className="space-y-2">
-                <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Active Reminder Schedule</span>
+                <span className="block text-xs font-bold text-slate-800 uppercase tracking-wider">Active Reminder Schedule</span>
                 {reminderTimesList.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic py-2">No reminder times added yet. Add at least one schedule above.</p>
+                  <p className="text-xs text-slate-800 italic py-2">No reminder times added yet. Add at least one schedule above.</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {reminderTimesList.map(item => (
@@ -373,7 +373,7 @@ function AddMedicineForm() {
                           <button
                             type="button"
                             onClick={() => handleEditReminderTime(item)}
-                            className="p-1 text-slate-400 hover:text-teal-650 hover:bg-teal-50 rounded-lg transition-colors"
+                            className="p-1 text-slate-600 hover:text-teal-650 hover:bg-teal-50 rounded-lg transition-colors"
                             title="Edit schedule time"
                           >
                             <Edit2 className="h-3.5 w-3.5" />
@@ -381,7 +381,7 @@ function AddMedicineForm() {
                           <button
                             type="button"
                             onClick={() => handleDeleteReminderTime(item.id)}
-                            className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete schedule time"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -408,7 +408,7 @@ function AddMedicineForm() {
                 placeholder="e.g. Take with water, avoid dairy, take 30 mins before breakfast"
                 className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
               />
-              <p className="text-xs text-slate-400">Add dietary guidelines, precautions, or warnings.</p>
+              <p className="text-xs text-slate-800">Add dietary guidelines, precautions, or warnings.</p>
             </div>
 
             {/* Buttons */}
@@ -422,7 +422,7 @@ function AddMedicineForm() {
               </button>
               <Link
                 href="/dashboard"
-                className="py-3.5 px-6 border border-slate-200 text-base font-bold text-slate-650 bg-white hover:bg-slate-50 rounded-xl transition-all text-center"
+                className="py-3.5 px-6 border border-slate-200 text-base font-bold text-slate-800 bg-white hover:bg-slate-50 rounded-xl transition-all text-center"
               >
                 Cancel
               </Link>
