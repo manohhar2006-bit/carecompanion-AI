@@ -133,6 +133,10 @@ interface AppContextType {
   consultationSummaries: ConsultationSummary[]; // Filtered by activeProfileId
   allConsultationSummaries: ConsultationSummary[]; // Full list
 
+  // Theme Scheme
+  theme: "light" | "dark";
+  toggleTheme: () => void;
+
   // Reminder States
   activeReminders: ActiveReminder[];
   reminderHistory: ReminderHistoryItem[];
@@ -391,11 +395,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [voiceReminderStatus, setVoiceReminderStatus] = useState<string>("Active • Voice Synthesizer Ready");
   const [lastReminderTriggered, setLastReminderTriggered] = useState<ReminderHistoryItem | null>(null);
 
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Theme state
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
 
   // Load from LocalStorage & Self-Healing Database Migration
   useEffect(() => {
     try {
+      const storedTheme = localStorage.getItem("cc_theme") as "light" | "dark" | null;
+      if (storedTheme) {
+        setTheme(storedTheme);
+        if (storedTheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      } else {
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initialTheme = prefersDark ? "dark" : "light";
+        setTheme(initialTheme);
+        if (initialTheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }
+
       const storedProfiles = localStorage.getItem("cc_profiles");
       const storedActiveId = localStorage.getItem("cc_activeProfileId");
       const storedMeds = localStorage.getItem("cc_allMedicines");
@@ -877,6 +902,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setCaregiverAlerts(prev => prev.filter(alert => alert.patientId !== patientId));
   };
 
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      localStorage.setItem("cc_theme", next);
+      if (next === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      return next;
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -892,6 +930,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         consultationSummaries,
         allConsultationSummaries,
         
+        theme,
+        toggleTheme,
+
         activeReminders,
         reminderHistory,
         caregiverAlerts,

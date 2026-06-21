@@ -72,7 +72,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 relative overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-dark-bg-primary relative overflow-hidden transition-colors duration-200">
       
       {/* Decorative background glows */}
       <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[50%] rounded-full bg-teal-200/10 blur-3xl -z-10 animate-pulse"></div>
@@ -87,7 +87,7 @@ export default function Home() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={heroStyle}
-        className="relative py-24 sm:py-32 bg-white border-b border-slate-200/60 overflow-hidden scroll-mt-20 select-none flex flex-col justify-center items-center"
+        className="relative py-24 sm:py-32 bg-white dark:bg-dark-bg-primary border-b border-slate-200/60 dark:border-slate-800 overflow-hidden scroll-mt-20 select-none flex flex-col justify-center items-center transition-colors duration-200"
       >
         {/* Style injection for animations */}
         <style jsx>{`
@@ -179,10 +179,10 @@ export default function Home() {
           <div className="absolute top-[15%] left-[8%] opacity-20 hidden lg:block">
             <div className="relative w-16 h-16">
               <svg className="w-full h-full text-teal-600 animate-heartbeat-breath" viewBox="0 0 100 100" fill="none">
-                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" fill="rgba(255,255,255,0.7)" />
+                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" className="fill-white/70 dark:fill-dark-bg-secondary/70" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-teal-600 animate-heartbeat" />
+                <Heart className="w-6 h-6 text-teal-600" />
               </div>
             </div>
           </div>
@@ -194,8 +194,8 @@ export default function Home() {
 
           {/* Left Bottom: Users/Elderly couple outline */}
           <div className="absolute bottom-[22%] left-[10%] opacity-20 hidden lg:block">
-            <div className="flex flex-col items-center justify-center p-3 bg-white/40 rounded-2xl border border-slate-100/50 backdrop-blur-xs">
-              <Users className="w-10 h-10 text-slate-500" strokeWidth={1.2} />
+            <div className="flex flex-col items-center justify-center p-3 bg-white/40 dark:bg-dark-bg-card/40 rounded-2xl border border-slate-100/50 dark:border-slate-800/40 backdrop-blur-xs">
+              <Users className="w-10 h-10 text-slate-700 dark:text-dark-text-muted" strokeWidth={1.2} />
             </div>
           </div>
 
@@ -203,7 +203,7 @@ export default function Home() {
           <div className="absolute top-[16%] right-[10%] opacity-20 hidden lg:block">
             <div className="relative w-16 h-16">
               <svg className="w-full h-full text-teal-600 animate-heartbeat-breath" viewBox="0 0 100 100" fill="none">
-                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" fill="rgba(255,255,255,0.7)" />
+                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" className="fill-white/70 dark:fill-dark-bg-secondary/70" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-xl select-none">💊</span>
@@ -220,7 +220,7 @@ export default function Home() {
           <div className="absolute top-[44%] right-[7%] opacity-20 hidden lg:block">
             <div className="relative w-14 h-14">
               <svg className="w-full h-full text-teal-600" viewBox="0 0 100 100" fill="none">
-                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" fill="rgba(255,255,255,0.7)" />
+                <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" stroke="currentColor" strokeWidth="1.5" className="fill-white/70 dark:fill-dark-bg-secondary/70" />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <Shield className="w-5 h-5 text-teal-600" />
@@ -230,8 +230,8 @@ export default function Home() {
 
           {/* Right Bottom: Clipboard outline */}
           <div className="absolute bottom-[24%] right-[11%] opacity-20 hidden lg:block">
-            <div className="flex flex-col items-center justify-center p-3 bg-white/40 rounded-2xl border border-slate-100/50 backdrop-blur-xs">
-              <ClipboardList className="w-10 h-10 text-slate-500" strokeWidth={1.2} />
+            <div className="flex flex-col items-center justify-center p-3 bg-white/40 dark:bg-dark-bg-card/40 rounded-2xl border border-slate-100/50 dark:border-slate-800/40 backdrop-blur-xs">
+              <ClipboardList className="w-10 h-10 text-slate-700 dark:text-dark-text-muted" strokeWidth={1.2} />
             </div>
           </div>
         </div>
@@ -271,15 +271,12 @@ export default function Home() {
               className="opacity-60 lg:opacity-90 animate-heartbeat"
             />
 
-            {/* Giant Central Heart Outline Frame */}
             <path 
               d="M 600, 155 C 500, 35 360, 95 360, 230 C 360, 370 500, 480 600, 545 C 700, 480 840, 370 840, 230 C 840, 95 700, 35 600, 155 Z" 
               stroke="white" 
               strokeWidth="6" 
-              fill="white"
-              fillOpacity="0.75"
+              className="fill-white dark:fill-dark-bg-secondary fill-opacity-75 dark:fill-opacity-40 drop-shadow-[0_0_35px_rgba(20,184,166,0.3)] select-none"
               filter="url(#heart-glow)"
-              className="drop-shadow-[0_0_35px_rgba(20,184,166,0.3)] select-none"
             />
             
             {/* Fine Teal Accent Line on Heart Frame */}
@@ -308,13 +305,13 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center z-20 parallax-layer-front relative select-text">
           
           {/* Top Sparkling Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-500/5 border border-teal-500/10 text-teal-800 text-[11px] font-bold mb-6 hover:bg-teal-500/10 transition-colors duration-200">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-500/5 dark:bg-teal-950/20 border border-teal-500/10 dark:border-teal-900/30 text-teal-800 dark:text-teal-400 text-[11px] font-bold mb-6 hover:bg-teal-500/10 transition-colors duration-200">
             <Sparkles className="h-3.5 w-3.5 text-teal-600 animate-spin" />
             <span>Introducing Next-Gen Elder Care</span>
           </div>
 
           {/* Centered Pulsing Logo Box */}
-          <div className="rounded-2xl bg-white border border-teal-100 p-3 shadow-md w-16 h-16 flex items-center justify-center animate-heartbeat-breath mb-6">
+          <div className="rounded-2xl bg-white dark:bg-dark-bg-card border border-teal-100 dark:border-slate-800 p-3 shadow-md w-16 h-16 flex items-center justify-center animate-heartbeat-breath mb-6">
             <HeartPulse className="h-9 w-9 text-teal-600" />
           </div>
 
@@ -354,52 +351,52 @@ export default function Home() {
       </section>
 
       {/* 2. Problem & Solution Section */}
-      <section id="about" ref={problemSectionRef} className="py-20 sm:py-28 bg-slate-50/50 scroll-mt-20 border-b border-slate-200/55">
+      <section id="about" ref={problemSectionRef} className="py-20 sm:py-28 bg-slate-50/50 dark:bg-dark-bg-secondary scroll-mt-20 border-b border-slate-200/55 dark:border-slate-800 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="text-center space-y-3">
-            <span className="text-xs uppercase font-extrabold text-teal-600 tracking-wider">The Challenge & The Answer</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Understanding Geriatric Adherence</h2>
+            <span className="text-xs uppercase font-extrabold text-teal-600 dark:text-teal-400 tracking-wider">The Challenge & The Answer</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-dark-text-primary tracking-tight">Understanding Geriatric Adherence</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* The Problem Card */}
-            <div className="bg-white rounded-3xl p-8 border border-red-100 shadow-xs hover:shadow-md transition-all space-y-6 relative overflow-hidden">
+            <div className="bg-white dark:bg-dark-bg-card rounded-3xl p-8 border border-red-105 dark:border-red-950/20 shadow-xs hover:shadow-md transition-all space-y-6 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-2.5 h-full bg-red-400"></div>
               
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 border border-red-100">
+                <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/20 text-red-650 dark:text-red-450 flex items-center justify-center shrink-0 border border-red-100 dark:border-red-900/30">
                   <AlertTriangle className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-800">The Problem</h3>
+                <h3 className="text-xl font-extrabold text-slate-800 dark:text-dark-text-primary">The Problem</h3>
               </div>
               
-              <blockquote className="text-base font-bold text-slate-600 leading-relaxed italic">
+              <blockquote className="text-base font-bold text-slate-800 dark:text-dark-text-primary leading-relaxed italic">
                 "Elderly patients often forget medicines and healthcare instructions."
               </blockquote>
               
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-sm text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                 Aging patients face complicated dosing schedules, fine-print instructions, and medical terms that are difficult to recall. Bypassing critical medications or mixing schedule times leads to emergency hospitalizations and places immense stress on families.
               </p>
             </div>
 
             {/* The Solution Card */}
-            <div className="bg-white rounded-3xl p-8 border border-teal-100 shadow-xs hover:shadow-md transition-all space-y-6 relative overflow-hidden">
+            <div className="bg-white dark:bg-dark-bg-card rounded-3xl p-8 border border-teal-105 dark:border-teal-950/20 shadow-xs hover:shadow-md transition-all space-y-6 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-2.5 h-full bg-teal-500"></div>
               
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 border border-teal-100">
+                <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/20 text-teal-650 dark:text-teal-450 flex items-center justify-center shrink-0 border border-teal-100 dark:border-teal-900/30">
                   <HeartPulse className="h-6 w-6" />
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-800">The Solution</h3>
+                <h3 className="text-xl font-extrabold text-slate-800 dark:text-dark-text-primary">The Solution</h3>
               </div>
               
-              <blockquote className="text-base font-bold text-slate-600 leading-relaxed italic">
+              <blockquote className="text-base font-bold text-slate-800 dark:text-dark-text-primary leading-relaxed italic">
                 "CareCompanion AI provides prescription understanding, voice reminders, caregiver monitoring, and doctor-ready reports."
               </blockquote>
               
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-sm text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                 We automate elder routines by reading scripts natively, speaking friendly instructions out loud on schedule, logging adherence logs, notifying family members of missed doses, and creating print-ready physical charts for medical reviews.
               </p>
             </div>
@@ -410,13 +407,13 @@ export default function Home() {
       </section>
 
       {/* 3. Features Section */}
-      <section id="features" className="py-20 sm:py-28 bg-white border-b border-slate-200/55 scroll-mt-20">
+      <section id="features" className="py-20 sm:py-28 bg-white dark:bg-dark-bg-primary border-b border-slate-200/55 dark:border-slate-850 scroll-mt-20 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
           <div className="text-center space-y-3">
-            <span className="text-xs uppercase font-extrabold text-teal-600 tracking-wider">Features Overview</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Equipped for Modern Elder Care</h2>
-            <p className="text-slate-600 max-w-xl mx-auto text-sm">
+            <span className="text-xs uppercase font-extrabold text-teal-600 dark:text-teal-400 tracking-wider">Features Overview</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-dark-text-primary tracking-tight">Equipped for Modern Elder Care</h2>
+            <p className="text-slate-700 dark:text-dark-text-secondary max-w-xl mx-auto text-sm">
               A comprehensive clinical suite built to secure patients, empower caregivers, and streamline physician verification.
             </p>
           </div>
@@ -424,81 +421,81 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             
             {/* Feature 1 */}
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md hover:bg-white hover:scale-[1.02] hover:border-teal-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <FileImage className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">AI Prescription Reader</h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">AI Prescription Reader</h3>
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                   Scan printed paper prescriptions. Simulated AI OCR analyzes text and drafts medicine schedule configurations automatically.
                 </p>
               </div>
-              <span className="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
                 Simulated OCR <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md hover:bg-white hover:scale-[1.02] hover:border-teal-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <Volume2 className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">Smart Voice Reminders</h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">Smart Voice Reminders</h3>
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                   Speech synthesis alerts read exact schedule details out loud using the active patient's name for elder-friendly compliance.
                 </p>
               </div>
-              <span className="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
                 Speech Cue <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md hover:bg-white hover:scale-[1.02] hover:border-teal-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <Users className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">Caregiver Monitoring</h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">Caregiver Monitoring</h3>
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                   Synchronized access for family members to view adherence progress, check log histories, and log patient feedback.
                 </p>
               </div>
-              <span className="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
                 Family Link <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md hover:bg-white hover:scale-[1.02] hover:border-teal-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <FileText className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">Doctor Reports</h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">Doctor Reports</h3>
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                   Generate print-ready clinical PDF charts containing schedules, compliance rates, non-adherence logs, and physician notes.
                 </p>
               </div>
-              <span className="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
                 Print Layout <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 shadow-xs hover:shadow-md hover:bg-white hover:scale-[1.02] hover:border-teal-200 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                   <Activity className="h-5 w-5" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">Medication Tracking</h3>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">Medication Tracking</h3>
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
                   Real-time tracker for compliance rates, logs, and schedule configurations to prevent adverse drug events.
                 </p>
               </div>
-              <span className="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+              <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
                 Compliance Log <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
@@ -509,13 +506,13 @@ export default function Home() {
       </section>
 
       {/* 4. How It Works Section */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-slate-50/50 border-b border-slate-200/55 scroll-mt-20">
+      <section id="how-it-works" className="py-20 sm:py-28 bg-slate-50/50 dark:bg-dark-bg-secondary border-b border-slate-200/55 dark:border-slate-800 scroll-mt-20 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           
           <div className="text-center space-y-3">
-            <span className="text-xs uppercase font-extrabold text-teal-600 tracking-wider">Step-by-Step Flow</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">How CareCompanion AI Operates</h2>
-            <p className="text-slate-600 max-w-xl mx-auto text-sm">
+            <span className="text-xs uppercase font-extrabold text-teal-600 dark:text-teal-400 tracking-wider">Step-by-Step Flow</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-dark-text-primary tracking-tight">How CareCompanion AI Operates</h2>
+            <p className="text-slate-700 dark:text-dark-text-secondary max-w-xl mx-auto text-sm">
               Follow this structured visual timeline mapping prescription uploads all the way to doctor verification.
             </p>
           </div>
@@ -523,13 +520,13 @@ export default function Home() {
           {/* Visual Timeline (Horizontal on Desktop, Connected Pathway on Mobile) */}
           <div className="relative">
             {/* Center line connector for timeline on desktop */}
-            <div className="hidden md:block absolute top-[24px] left-[8%] right-[8%] h-[3px] bg-slate-200 -z-0"></div>
+            <div className="hidden md:block absolute top-[24px] left-[8%] right-[8%] h-[3px] bg-slate-200 dark:bg-slate-800 -z-0"></div>
             
             {/* Moving glowing line connector on desktop */}
-            <div className="hidden md:block absolute top-[24px] left-[8%] right-[8%] h-[3px] bg-gradient-to-r from-teal-500 via-sky-400 to-teal-500 animate-flow-horizontal -z-0"></div>
+            <div className="hidden md:block absolute top-[24px] left-[8%] right-[8%] h-[3px] bg-gradient-to-r from-teal-500 via-sky-400 to-teal-500 animate-flow-horizontal -z-0 opacity-40"></div>
 
             {/* Vertical connector line on mobile */}
-            <div className="md:hidden absolute left-[24px] top-6 bottom-6 w-[3px] bg-slate-200 z-0"></div>
+            <div className="md:hidden absolute left-[24px] top-6 bottom-6 w-[3px] bg-slate-200 dark:bg-slate-800 z-0"></div>
             <div className="md:hidden absolute left-[24px] top-6 bottom-6 w-[3px] bg-gradient-to-b from-teal-500 via-sky-400 to-teal-500 z-0 opacity-40"></div>
 
             <div className="grid grid-cols-1 md:grid-cols-6 gap-6 relative z-10">
@@ -537,17 +534,17 @@ export default function Home() {
               {/* Step 1 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     1
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 1: Upload Prescription</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 1: Upload Prescription</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 1</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">Upload Prescription</h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed mt-2 md:mt-0">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 1</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">Upload Prescription</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed mt-2 md:mt-0">
                       The caregiver or patient uploads a doctor prescription.
                     </p>
                   </div>
@@ -557,17 +554,17 @@ export default function Home() {
               {/* Step 2 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     2
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 2: AI Extracts Medicines</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 2: AI Extracts Medicines</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 2</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">AI Extracts Medicines</h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed mt-2 md:mt-0">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 2</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">AI Extracts Medicines</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed mt-2 md:mt-0">
                       AI extracts medicines, dosage, and schedules.
                     </p>
                   </div>
@@ -577,17 +574,17 @@ export default function Home() {
               {/* Step 3 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     3
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 3: Voice Reminder</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 3: Voice Reminder</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 3</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">Voice Reminder</h4>
-                    <p className="text-[11px] text-slate-500 leading-relaxed mt-2 md:mt-0 italic font-semibold text-teal-700 bg-teal-50/50 p-2 rounded-lg border border-teal-100/40">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 3</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">Voice Reminder</h4>
+                    <p className="text-[11px] leading-relaxed mt-2 md:mt-0 italic font-semibold text-teal-900 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-950/20 p-2 rounded-lg border border-teal-200 dark:border-teal-900/40">
                       "Hello Mr. Ramesh, it is time for your medication."
                     </p>
                   </div>
@@ -597,17 +594,17 @@ export default function Home() {
               {/* Step 4 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     4
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 4: Patient Marks Taken</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 4: Patient Marks Taken</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 4</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">Patient Marks Taken</h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed mt-2 md:mt-0">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 4</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">Patient Marks Taken</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed mt-2 md:mt-0">
                       Patient records medicine intake.
                     </p>
                   </div>
@@ -617,17 +614,17 @@ export default function Home() {
               {/* Step 5 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     5
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 5: Caregiver Monitors Progress</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 5: Caregiver Monitors Progress</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 5</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">Caregiver Monitors Progress</h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed mt-2 md:mt-0">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 5</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">Caregiver Monitors Progress</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed mt-2 md:mt-0">
                       Family members track adherence.
                     </p>
                   </div>
@@ -637,17 +634,17 @@ export default function Home() {
               {/* Step 6 */}
               <div className="flex flex-col items-start md:items-center text-left md:text-center group">
                 <div className="flex items-center md:justify-center w-full gap-4 md:flex-col">
-                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center font-black text-sm border-4 border-white dark:border-dark-bg-secondary shadow-md z-10 shrink-0 group-hover:scale-110 transition-transform">
                     6
                   </div>
-                  <div className="md:hidden font-bold text-slate-800 text-base">Step 6: Doctor Report Generated</div>
+                  <div className="md:hidden font-bold text-slate-800 dark:text-dark-text-primary text-base">Step 6: Doctor Report Generated</div>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-5 border border-slate-100/80 shadow-2xs hover:shadow-md hover:border-teal-200 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
+                <div className="bg-white dark:bg-dark-bg-card rounded-2xl p-5 border border-slate-100/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-teal-200 dark:hover:border-teal-900/55 transition-all flex flex-col justify-between h-[190px] mt-4 w-full ml-16 md:ml-0">
                   <div>
-                    <span className="hidden md:block text-[10px] font-bold text-teal-600 uppercase tracking-wider mb-1">Step 6</span>
-                    <h4 className="hidden md:block text-sm font-bold text-slate-800 leading-tight">Doctor Report Generated</h4>
-                    <p className="text-[11px] text-slate-600 leading-relaxed mt-2 md:mt-0">
+                    <span className="hidden md:block text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider mb-1">Step 6</span>
+                    <h4 className="hidden md:block text-sm font-bold text-slate-800 dark:text-dark-text-primary leading-tight">Doctor Report Generated</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed mt-2 md:mt-0">
                       Generate health and medication compliance reports.
                     </p>
                   </div>

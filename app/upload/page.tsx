@@ -308,17 +308,17 @@ export default function PrescriptionUploadPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full space-y-6">
+    <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full space-y-6 animate-fade-in">
       {/* Title */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-4 gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">AI Prescription Scanner</h1>
-          <p className="text-slate-800 text-sm">Upload written prescription sheets to simulate automated schedule logs.</p>
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-dark-text-primary tracking-tight">AI Prescription Scanner</h1>
+          <p className="text-slate-700 dark:text-dark-text-secondary text-sm">Upload written prescription sheets to simulate automated schedule logs.</p>
         </div>
         <div>
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-905 bg-white border border-slate-250 px-3 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-dark-text-secondary hover:text-slate-900 dark:hover:text-white bg-white dark:bg-dark-bg-secondary border border-slate-250 dark:border-slate-700 px-3 py-2 rounded-lg transition-colors cursor-pointer"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             <span>Reset Scanner</span>
@@ -330,11 +330,11 @@ export default function PrescriptionUploadPage() {
         
         {/* Left Side */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
-            <h2 className="text-base font-bold text-slate-800 mb-4">Select Prescription File</h2>
+          <div className="bg-white dark:bg-dark-bg-card rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
+            <h2 className="text-base font-bold text-slate-850 dark:text-dark-text-primary mb-4">Select Prescription File</h2>
 
             {!previewUrl ? (
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center bg-slate-50 hover:bg-slate-100/50 hover:border-teal-500 transition-all duration-200 relative">
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-750 rounded-xl p-8 text-center bg-slate-50 dark:bg-dark-bg-secondary hover:bg-slate-100/50 dark:hover:bg-dark-bg-elevated/40 hover:border-teal-500 transition-all duration-200 relative">
                 <input
                   type="file"
                   accept="image/*,application/pdf"
@@ -342,20 +342,20 @@ export default function PrescriptionUploadPage() {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div className="space-y-4">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-teal-50 text-teal-650 flex items-center justify-center">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-650 dark:text-teal-400 flex items-center justify-center">
                     <Upload className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-700">Drag and drop file here</p>
-                    <p className="text-xs text-slate-800 mt-1">Supports PNG, JPG, or PDF (Max 10MB)</p>
+                    <p className="text-sm font-bold text-slate-700 dark:text-dark-text-primary">Drag and drop file here</p>
+                    <p className="text-xs text-slate-700 dark:text-dark-text-secondary mt-1">Supports PNG, JPG, or PDF (Max 10MB)</p>
                   </div>
                   <div className="relative flex justify-center py-2">
-                    <span className="bg-slate-55 px-2 text-xs font-bold text-slate-800">or</span>
+                    <span className="bg-slate-55 dark:bg-dark-bg-secondary px-2 text-xs font-bold text-slate-700 dark:text-dark-text-secondary">or</span>
                   </div>
                   <button
                     type="button"
                     onClick={triggerDemo}
-                    className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-lg transition-all"
+                    className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-lg transition-all cursor-pointer"
                   >
                     Use Sample Medical Script
                   </button>
@@ -363,24 +363,24 @@ export default function PrescriptionUploadPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-100 relative min-h-[300px] flex items-center justify-center">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-100 dark:bg-dark-bg-secondary relative min-h-[300px] flex items-center justify-center">
                   {file?.name === "demo_prescription.png" ? (
                     <div className="p-6 text-center space-y-4 max-w-xs">
-                      <FileText className="h-16 w-16 text-teal-600 mx-auto opacity-75" />
-                      <div className="border-t border-slate-200 pt-3 text-left font-serif space-y-2">
-                        <p className="text-xs font-bold text-teal-955 uppercase">Metro General Cardiology Clinic</p>
-                        <p className="text-[10px] text-slate-800">Date: June 15, 2026 • Patient: Ramesh</p>
-                        <p className="text-xs text-slate-700 mt-2 font-semibold">Rx:</p>
-                        <p className="text-xs italic text-slate-700 pl-2">1. Atorvastatin 10mg - QD tab hs #30</p>
-                        <p className="text-xs italic text-slate-700 pl-2">2. Levothyroxine 50mcg - QD tab qam ac #90</p>
-                        <p className="text-[9px] text-slate-800 mt-4 text-right">Signed: Dr. Sarah Alcott, MD</p>
+                      <FileText className="h-16 w-16 text-teal-650 dark:text-teal-400 mx-auto opacity-75 animate-pulse" />
+                      <div className="border-t border-slate-200 dark:border-slate-800 pt-3 text-left font-serif space-y-2">
+                        <p className="text-xs font-bold text-teal-900 dark:text-teal-400 uppercase">Metro General Cardiology Clinic</p>
+                        <p className="text-[10px] text-slate-700 dark:text-dark-text-secondary">Date: June 15, 2026 • Patient: Ramesh</p>
+                        <p className="text-xs text-slate-800 dark:text-dark-text-primary mt-2 font-semibold">Rx:</p>
+                        <p className="text-xs italic text-slate-750 dark:text-dark-text-secondary pl-2">1. Atorvastatin 10mg - QD tab hs #30</p>
+                        <p className="text-xs italic text-slate-755 dark:text-dark-text-secondary pl-2">2. Levothyroxine 50mcg - QD tab qam ac #90</p>
+                        <p className="text-[9px] text-slate-700 dark:text-dark-text-muted mt-4 text-right">Signed: Dr. Sarah Alcott, MD</p>
                       </div>
                     </div>
                   ) : (
                     <div className="p-8 text-center space-y-2">
-                      <FileText className="h-12 w-12 text-slate-800 mx-auto" />
-                      <p className="text-xs font-bold text-slate-800">{file?.name}</p>
-                      <p className="text-[10px] text-slate-800">{(file?.size ? file.size / 1024 : 0).toFixed(1)} KB</p>
+                      <FileText className="h-12 w-12 text-slate-800 dark:text-dark-text-secondary mx-auto" />
+                      <p className="text-xs font-bold text-slate-800 dark:text-dark-text-primary">{file?.name}</p>
+                      <p className="text-[10px] text-slate-750 dark:text-dark-text-secondary">{(file?.size ? file.size / 1024 : 0).toFixed(1)} KB</p>
                     </div>
                   )}
                 </div>
@@ -388,13 +388,13 @@ export default function PrescriptionUploadPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="flex-1 text-center py-2 px-4 border border-slate-205 text-xs font-bold text-slate-800 bg-white hover:bg-slate-55 rounded-lg transition-all"
+                    className="flex-1 text-center py-2 px-4 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-dark-text-secondary bg-white dark:bg-dark-bg-secondary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated rounded-lg transition-all cursor-pointer"
                   >
                     Clear File
                   </button>
                   <button
                     onClick={triggerMockAnalysis}
-                    className="flex-1 text-center py-2 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-all"
+                    className="flex-1 text-center py-2 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-all cursor-pointer"
                   >
                     Re-Scan
                   </button>
@@ -403,10 +403,10 @@ export default function PrescriptionUploadPage() {
             )}
           </div>
 
-          <div className="bg-teal-50 border border-teal-150 rounded-xl p-4 flex gap-3 text-teal-900">
-            <Info className="h-5 w-5 text-teal-600 shrink-0 mt-0.5" />
+          <div className="bg-teal-50 dark:bg-teal-950/15 border border-teal-150 dark:border-teal-900/40 rounded-xl p-4 flex gap-3 text-teal-900 dark:text-teal-300">
+            <Info className="h-5 w-5 text-teal-600 dark:text-teal-450 shrink-0 mt-0.5" />
             <div className="text-xs space-y-1">
-              <h4 className="font-bold">Clinic OCR Guide</h4>
+              <h4 className="font-bold text-slate-850 dark:text-dark-text-primary">Clinic OCR Guide</h4>
               <p className="leading-relaxed">
                 The scanner simulates scanning doctor handwriting notation (e.g. <em>QD</em> daily, <em>hs</em> at bedtime, <em>ac</em> before food) 
                 and translating them into scheduled medication logs.
@@ -417,17 +417,17 @@ export default function PrescriptionUploadPage() {
 
         {/* Right Side */}
         <div className="lg:col-span-7">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+          <div className="bg-white dark:bg-dark-bg-card rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
             
-            <div className="border-b border-slate-200 px-6 py-4 flex items-center justify-between bg-slate-50">
+            <div className="border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between bg-slate-50 dark:bg-dark-bg-secondary">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-teal-650" />
-                <h2 className="text-sm font-bold text-slate-800">AI Extraction Status</h2>
+                <Sparkles className="h-5 w-5 text-teal-650 dark:text-teal-400" />
+                <h2 className="text-sm font-bold text-slate-800 dark:text-dark-text-primary">AI Extraction Status</h2>
               </div>
               <div>
-                {!previewUrl && <span className="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-bold">Waiting for file</span>}
-                {isProcessing && <span className="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold animate-pulse">Processing...</span>}
-                {isDone && <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5"><Check className="h-3 w-3" /> Ready</span>}
+                {!previewUrl && <span className="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-dark-text-secondary px-2 py-0.5 rounded-full font-bold">Waiting for file</span>}
+                {isProcessing && <span className="text-[10px] bg-teal-100 dark:bg-teal-950/40 text-teal-800 dark:text-teal-400 px-2 py-0.5 rounded-full font-bold animate-pulse">Processing...</span>}
+                {isDone && <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5 border border-emerald-200 dark:border-emerald-900/40"><Check className="h-3 w-3" /> Ready</span>}
               </div>
             </div>
 
@@ -435,12 +435,12 @@ export default function PrescriptionUploadPage() {
               
               {!previewUrl && !isProcessing && (
                 <div className="text-center py-16 space-y-3">
-                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-bg-secondary text-slate-800 dark:text-dark-text-secondary flex items-center justify-center">
                     <FileText className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-850">No Document Uploaded</h3>
-                    <p className="text-xs text-slate-800 mt-1 max-w-xs mx-auto">
+                    <h3 className="text-sm font-bold text-slate-850 dark:text-dark-text-primary">No Document Uploaded</h3>
+                    <p className="text-xs text-slate-700 dark:text-dark-text-secondary mt-1 max-w-xs mx-auto">
                       Upload a prescription or click "Use Sample Medical Script" to verify the AI parser.
                     </p>
                   </div>
@@ -453,10 +453,10 @@ export default function PrescriptionUploadPage() {
                     <div className="w-12 h-12 rounded-full border-4 border-teal-200 border-t-teal-600 animate-spin"></div>
                   </div>
                   <div className="text-center space-y-1.5">
-                    <h3 className="text-sm font-bold text-slate-850">Extracting Medication Data</h3>
-                    <p className="text-xs text-teal-600 font-semibold animate-pulse">{processingSteps[processStep]}</p>
+                    <h3 className="text-sm font-bold text-slate-850 dark:text-dark-text-primary">Extracting Medication Data</h3>
+                    <p className="text-xs text-teal-600 dark:text-teal-400 font-semibold animate-pulse">{processingSteps[processStep]}</p>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-1.5 max-w-sm mx-auto overflow-hidden">
+                  <div className="w-full bg-slate-100 dark:bg-dark-bg-secondary rounded-full h-1.5 max-w-sm mx-auto overflow-hidden">
                     <div 
                        className="bg-teal-650 h-1.5 rounded-full transition-all duration-300"
                       style={{ width: `${((processStep + 1) / processingSteps.length) * 100}%` }}
@@ -468,20 +468,20 @@ export default function PrescriptionUploadPage() {
               {isDone && (
                 <div className="space-y-6">
                   {isImported && (
-                    <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-250 text-emerald-800 text-sm font-bold flex items-center gap-2 animate-pulse mb-4">
+                    <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-250 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-400 text-sm font-bold flex items-center gap-2 animate-pulse mb-4">
                       <CheckCircle className="h-5 w-5 text-emerald-600" />
                       <span>Medicines imported! Returning to Dashboard...</span>
                     </div>
                   )}
 
                   {scanError && (
-                    <div className="p-4 rounded-lg bg-amber-50 border border-amber-250 text-amber-800 text-sm font-bold flex items-center gap-2 mb-4">
+                    <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-250 dark:border-amber-900/40 text-amber-800 dark:text-amber-400 text-sm font-bold flex items-center gap-2 mb-4">
                       <AlertCircle className="h-5 w-5 text-amber-600 shrink-0" />
                       <span>Real-time AI scanning failed: {scanError}. Displaying mock demo data as fallback.</span>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-800 bg-amber-50 border border-amber-100 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40 p-3 rounded-lg">
                     <AlertCircle className="h-4 w-4 text-amber-550 shrink-0" />
                     <span>Please verify the extracted values against the original prescription sheet for accuracy.</span>
                   </div>
@@ -494,8 +494,8 @@ export default function PrescriptionUploadPage() {
                           key={med.id} 
                           className={`border rounded-xl p-5 transition-all relative ${
                             isSelected 
-                              ? "border-teal-500 bg-teal-50/10 shadow-xs" 
-                              : "border-slate-200 bg-white/50 opacity-60"
+                              ? "border-teal-500 bg-teal-50/10 dark:bg-teal-950/10 shadow-xs" 
+                              : "border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-bg-secondary/40 opacity-80"
                           }`}
                         >
                           {/* Selection Checkbox */}
@@ -504,20 +504,20 @@ export default function PrescriptionUploadPage() {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleToggleSelect(index)}
-                              className="h-4 w-4 rounded-sm border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                              className="h-4 w-4 rounded-sm border-slate-300 dark:border-slate-700 text-teal-600 focus:ring-teal-500 cursor-pointer"
                             />
                           </div>
 
                           <div className="space-y-4">
                             {/* Card Header with Badges */}
                             <div className="flex flex-wrap items-center gap-2 pr-8">
-                              <span className="text-[10px] bg-teal-150 text-teal-800 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                              <span className="text-[10px] bg-teal-150 dark:bg-teal-950/40 text-teal-800 dark:text-teal-400 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">
                                 Extracted {index + 1}
                               </span>
                               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center gap-1 ${
                                 med.exactTime === "00:00"
-                                  ? "bg-amber-50 text-amber-700 border-amber-200 animate-pulse"
-                                  : "bg-emerald-50 text-emerald-700 border-emerald-250"
+                                  ? "bg-amber-50 dark:bg-amber-955/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/40 animate-pulse"
+                                  : "bg-emerald-50 dark:bg-emerald-955/10 text-emerald-700 dark:text-emerald-400 border-emerald-250 dark:border-emerald-900/40"
                               }`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${med.exactTime === "00:00" ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`}></span>
                                 {med.exactTime === "00:00" ? "Needs Time" : "Scheduled"}
@@ -529,40 +529,40 @@ export default function PrescriptionUploadPage() {
                               <div className="space-y-2">
                                 {/* Medicine Name Row */}
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Medicine:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0">Medicine:</span>
                                   <input
                                     type="text"
                                     value={med.name ?? ""}
                                     onChange={(e) => handleFieldChange(index, "name", e.target.value)}
-                                    className="flex-1 text-sm font-semibold text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 rounded-xs"
+                                    className="flex-1 text-sm font-semibold text-slate-800 dark:text-white border-b border-dashed border-slate-350 dark:border-slate-700 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 dark:hover:bg-dark-bg-secondary rounded-xs"
                                     placeholder="e.g. Augmentin"
                                   />
                                 </div>
 
                                 {/* Dosage Row */}
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Dosage:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0">Dosage:</span>
                                   <input
                                     type="text"
                                     value={med.dosage ?? ""}
                                     onChange={(e) => handleFieldChange(index, "dosage", e.target.value)}
-                                    className="flex-1 text-sm text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 rounded-xs"
+                                    className="flex-1 text-sm text-slate-800 dark:text-white border-b border-dashed border-slate-350 dark:border-slate-700 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 dark:hover:bg-dark-bg-secondary rounded-xs"
                                     placeholder="e.g. 625mg"
                                   />
                                 </div>
 
                                 {/* Duration Row */}
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Duration:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0">Duration:</span>
                                   <div className="flex items-center gap-2 flex-1">
                                     <input
                                       type="number"
                                       value={med.duration || ""}
                                       onChange={(e) => handleFieldChange(index, "duration", parseInt(e.target.value) || 0)}
-                                      className="w-16 text-sm text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 rounded-xs"
+                                      className="w-16 text-sm text-slate-800 dark:text-white border-b border-dashed border-slate-350 dark:border-slate-700 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-50/50 dark:hover:bg-dark-bg-secondary rounded-xs"
                                       placeholder="e.g. 5"
                                     />
-                                    <span className="text-xs text-slate-800 font-semibold">
+                                    <span className="text-xs text-slate-800 dark:text-dark-text-secondary font-semibold">
                                       {med.duration ? `for ${med.duration} days` : "days (missing duration)"}
                                     </span>
                                   </div>
@@ -572,19 +572,19 @@ export default function PrescriptionUploadPage() {
                               <div className="space-y-2">
                                 {/* Time Row */}
                                 <div className="flex items-start gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0 mt-1">Time:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0 mt-1">Time:</span>
                                   <div className="flex flex-wrap items-center gap-2 flex-1">
                                     {isEditingTime === index ? (
-                                      <div className="flex items-center gap-2 bg-slate-50 p-1 border border-slate-200 rounded-lg">
+                                      <div className="flex items-center gap-2 bg-slate-50 dark:bg-dark-bg-secondary p-1 border border-slate-200 dark:border-slate-700 rounded-lg">
                                         <input
                                           type="time"
                                           value={med.exactTime || "00:00"}
                                           onChange={(e) => handleFieldChange(index, "exactTime", e.target.value)}
-                                          className="text-xs font-semibold text-slate-800 bg-transparent border-0 focus:ring-0 focus:outline-hidden p-0.5"
+                                          className="text-xs font-semibold text-slate-800 dark:text-white bg-transparent border-0 focus:ring-0 focus:outline-hidden p-0.5"
                                         />
                                         <button
                                           onClick={() => setIsEditingTime(null)}
-                                          className="text-[10px] font-bold text-teal-650 bg-teal-50 hover:bg-teal-100 px-2 py-1 rounded-md border border-teal-200 transition-colors"
+                                          className="text-[10px] font-bold text-teal-650 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/40 px-2 py-1 rounded-md border border-teal-200 dark:border-teal-900/40 transition-colors cursor-pointer"
                                         >
                                           Done
                                         </button>
@@ -593,14 +593,14 @@ export default function PrescriptionUploadPage() {
                                       <div className="flex items-center gap-2">
                                         <span className={`text-sm font-extrabold px-2.5 py-1 rounded-lg shadow-2xs border ${
                                           med.exactTime === "00:00"
-                                            ? "bg-amber-50 text-amber-800 border-amber-200"
-                                            : "bg-teal-50 text-teal-800 border-teal-200"
+                                            ? "bg-amber-50 text-amber-800 dark:bg-amber-955/15 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
+                                            : "bg-teal-50 text-teal-800 dark:bg-teal-955/15 dark:text-teal-400 border-teal-200 dark:border-teal-900/40"
                                         }`}>
                                           {med.exactTime && med.exactTime !== "00:00" ? formatTime12h(med.exactTime) : "00:00"}
                                         </span>
                                         <button
                                           onClick={() => setIsEditingTime(index)}
-                                          className="text-[10px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 px-2 py-1 bg-teal-50 hover:bg-teal-100 rounded-md border border-teal-150 transition-all active:scale-95"
+                                          className="text-[10px] font-bold text-teal-700 dark:text-teal-400 hover:text-teal-900 dark:hover:text-teal-300 flex items-center gap-1 px-2 py-1 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-md border border-teal-150 dark:border-teal-900/40 transition-all active:scale-95 cursor-pointer"
                                         >
                                           {med.exactTime === "00:00" ? "Set Time" : "Edit Time"}
                                         </button>
@@ -611,19 +611,19 @@ export default function PrescriptionUploadPage() {
 
                                 {/* Instructions Row */}
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Instructions:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0">Instructions:</span>
                                   <input
                                     type="text"
                                     value={med.notes ?? ""}
                                     onChange={(e) => handleFieldChange(index, "notes", e.target.value)}
-                                    className="flex-1 text-xs text-slate-800 border-b border-dashed border-slate-300 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 rounded-xs"
+                                    className="flex-1 text-xs text-slate-800 dark:text-white border-b border-dashed border-slate-350 dark:border-slate-700 hover:border-teal-500 focus:border-teal-500 focus:outline-hidden py-0.5 bg-transparent transition-colors px-1 hover:bg-slate-55/50 dark:hover:bg-dark-bg-secondary rounded-xs"
                                     placeholder="e.g. after meals"
                                   />
                                 </div>
  
                                 {/* Time Slot Row */}
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-bold text-slate-800 uppercase w-20 shrink-0">Time Slot:</span>
+                                  <span className="text-xs font-bold text-slate-800 dark:text-dark-text-muted uppercase w-20 shrink-0">Time Slot:</span>
                                   <div className="flex flex-wrap gap-1 flex-1">
                                     {["morning", "afternoon", "evening", "night"].map((slot) => {
                                       const active = med.timeOfDay.includes(slot);
@@ -637,10 +637,10 @@ export default function PrescriptionUploadPage() {
                                               : [...med.timeOfDay, slot];
                                             handleFieldChange(index, "timeOfDay", updatedSlots);
                                           }}
-                                          className={`text-[9px] uppercase px-2 py-0.5 rounded-md font-bold transition-all border ${
+                                          className={`text-[9px] uppercase px-2 py-0.5 rounded-md font-bold transition-all border cursor-pointer ${
                                             active
                                               ? "bg-teal-650 text-white border-teal-700 shadow-xs"
-                                              : "bg-slate-50 text-slate-800 border-slate-205 hover:bg-slate-100"
+                                              : "bg-slate-50 dark:bg-dark-bg-secondary text-slate-800 dark:text-dark-text-secondary border-slate-205 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-dark-bg-elevated"
                                           }`}
                                         >
                                           {slot}
@@ -654,18 +654,18 @@ export default function PrescriptionUploadPage() {
 
                             {/* Original OCR Output Snapshot (Data Consistency Guarantee) */}
                             {med.originalOcrData && (
-                              <div className="mt-2 text-[10px] text-slate-800 bg-slate-50/50 border border-slate-250 rounded-lg p-2.5 space-y-1">
-                                <div className="font-bold text-slate-800 flex items-center gap-1 uppercase tracking-wider text-[9px]">
+                              <div className="mt-2 text-[10px] text-slate-800 dark:text-dark-text-secondary bg-slate-50/50 dark:bg-dark-bg-secondary/50 border border-slate-250 dark:border-slate-800 rounded-lg p-2.5 space-y-1">
+                                <div className="font-bold text-slate-850 dark:text-dark-text-muted flex items-center gap-1 uppercase tracking-wider text-[9px]">
                                   <span>🔍 AI OCR Preserved Record</span>
                                 </div>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-0.5 leading-normal">
-                                  <div>Name: <span className="font-semibold text-slate-800">"{med.originalOcrData.name || "N/A"}"</span></div>
-                                  <div>Dosage: <span className="font-semibold text-slate-800">"{med.originalOcrData.dosage || "N/A"}"</span></div>
-                                  <div>Time: <span className="font-semibold text-slate-800">"{med.originalOcrData.exactTime || "N/A"}"</span></div>
-                                  <div>Duration: <span className="font-semibold text-slate-800">{med.originalOcrData.duration ? `${med.originalOcrData.duration} days` : "N/A"}</span></div>
+                                  <div>Name: <span className="font-semibold text-slate-800 dark:text-dark-text-primary">"{med.originalOcrData.name || "N/A"}"</span></div>
+                                  <div>Dosage: <span className="font-semibold text-slate-800 dark:text-dark-text-primary">"{med.originalOcrData.dosage || "N/A"}"</span></div>
+                                  <div>Time: <span className="font-semibold text-slate-800 dark:text-dark-text-primary">"{med.originalOcrData.exactTime || "N/A"}"</span></div>
+                                  <div>Duration: <span className="font-semibold text-slate-800 dark:text-dark-text-primary">{med.originalOcrData.duration ? `${med.originalOcrData.duration} days` : "N/A"}</span></div>
                                 </div>
                                 {med.originalOcrData.notes && (
-                                  <div className="truncate">Instructions: <span className="font-semibold text-slate-800">"{med.originalOcrData.notes}"</span></div>
+                                  <div className="truncate">Instructions: <span className="font-semibold text-slate-800 dark:text-dark-text-primary">"{med.originalOcrData.notes}"</span></div>
                                 )}
                               </div>
                             )}
@@ -675,11 +675,11 @@ export default function PrescriptionUploadPage() {
                     })}
                   </div>
 
-                  <div className="pt-4 border-t border-slate-100 flex gap-4">
+                  <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-4">
                     <button
                       onClick={handleImport}
                       disabled={selectedMeds.length === 0 || isImported}
-                      className="flex-1 py-3 px-6 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs hover:shadow-md transition-all duration-200 text-center flex items-center justify-center gap-2"
+                      className="flex-1 py-3 px-6 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-xs hover:shadow-md transition-all duration-200 text-center flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>Use Extracted Medications ({selectedMeds.length})</span>
                       <ArrowRight className="h-4 w-4" />

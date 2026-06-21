@@ -82,12 +82,12 @@ export default function VoiceRemindersPage() {
   if (!activeProfile) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-6">
-        <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 animate-pulse shadow-sm">
+        <div className="mx-auto w-16 h-16 rounded-full bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/50 flex items-center justify-center border border-amber-200 animate-pulse shadow-sm">
           <AlertCircle className="h-8 w-8" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-slate-800">No Patient Profile Loaded</h2>
-          <p className="text-slate-800 text-sm leading-relaxed">
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white">No Patient Profile Loaded</h2>
+          <p className="text-slate-800 dark:text-slate-300 text-sm leading-relaxed">
             Please select an existing patient file or register a new one to configure voice reminder schedules.
           </p>
         </div>
@@ -275,19 +275,19 @@ export default function VoiceRemindersPage() {
     <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full space-y-6 animate-fade-in">
       
       {/* Page Header */}
-      <div className="border-b border-slate-200 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-teal-800 bg-teal-100/60 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-xs font-bold text-teal-800 bg-teal-100/60 border border-teal-200 dark:text-teal-300 dark:bg-teal-950/30 dark:border-teal-900/50 px-3 py-1 rounded-full uppercase tracking-wider">
               Adherence Cues
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
               Voice Reminders Active
             </span>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-1.5">Voice Companion Reminders</h1>
-          <p className="text-slate-800 text-xs mt-0.5">Custom text-to-speech loops built for elder visual support and scheduling compliance.</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1.5">Voice Companion Reminders</h1>
+          <p className="text-slate-850 dark:text-slate-300 text-xs mt-0.5">Custom text-to-speech loops built for elder visual support and scheduling compliance.</p>
         </div>
       </div>
 
@@ -297,10 +297,10 @@ export default function VoiceRemindersPage() {
         <div className="lg:col-span-8 space-y-6">
           
           {/* Voice engine settings */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
+          <div className="bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-800 flex items-center gap-1.5">
-                <Settings className="h-5 w-5 text-teal-700" />
+              <h2 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                <Settings className="h-5 w-5 text-teal-700 dark:text-teal-400" />
                 Voice Synthesizer Calibration
               </h2>
               {isPlaying && (
@@ -316,7 +316,7 @@ export default function VoiceRemindersPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
               {/* Rate */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-800 uppercase">Spoken Pace (Speed)</label>
+                <label className="block text-xs font-bold text-slate-850 dark:text-dark-text-secondary uppercase">Spoken Pace (Speed)</label>
                 <div className="flex items-center gap-3">
                   <input
                     suppressHydrationWarning
@@ -326,16 +326,16 @@ export default function VoiceRemindersPage() {
                     step="0.05"
                     value={speechRate}
                     onChange={(e) => setSpeechRate(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                    className="w-full h-1 bg-slate-100 dark:bg-slate-950 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
-                  <span className="text-xs font-bold text-slate-900 w-10 text-right">{Math.round(speechRate * 100)}%</span>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white w-10 text-right">{Math.round(speechRate * 100)}%</span>
                 </div>
-                <p className="text-[10px] text-slate-800 leading-normal">Configured for elder comprehension.</p>
+                <p className="text-[10px] text-slate-700 dark:text-dark-text-muted leading-normal">Configured for elder comprehension.</p>
               </div>
 
               {/* Pitch */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-800 uppercase">Speaker Frequency (Pitch)</label>
+                <label className="block text-xs font-bold text-slate-850 dark:text-dark-text-secondary uppercase">Speaker Frequency (Pitch)</label>
                 <div className="flex items-center gap-3">
                   <input
                     suppressHydrationWarning
@@ -345,23 +345,23 @@ export default function VoiceRemindersPage() {
                     step="0.05"
                     value={speechPitch}
                     onChange={(e) => setSpeechPitch(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                    className="w-full h-1 bg-slate-100 dark:bg-slate-950 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
-                  <span className="text-xs font-bold text-slate-900 w-10 text-right">{Math.round(speechPitch * 100)}%</span>
+                  <span className="text-xs font-bold text-slate-900 dark:text-white w-10 text-right">{Math.round(speechPitch * 100)}%</span>
                 </div>
-                <p className="text-[10px] text-slate-800 leading-normal">Calibrated for friendly tone ranges.</p>
+                <p className="text-[10px] text-slate-700 dark:text-dark-text-muted leading-normal">Calibrated for friendly tone ranges.</p>
               </div>
 
               {/* Language Selector */}
               <div className="space-y-2">
-                <label htmlFor="rem-lang" className="block text-xs font-bold text-slate-800 uppercase">Reminder Language</label>
+                <label htmlFor="rem-lang" className="block text-xs font-bold text-slate-855 dark:text-dark-text-secondary uppercase">Reminder Language</label>
                 <select
                   id="rem-lang"
                   value={activeProfile.language || "English"}
                   onChange={(e) => {
                     updateProfile(activeProfile.id, { language: e.target.value });
                   }}
-                  className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-xl p-2.5 bg-white focus:outline-hidden focus:border-teal-500"
+                  className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-800 rounded-xl p-2.5 bg-white dark:bg-slate-950 focus:outline-hidden focus:border-teal-500"
                 >
                   <option value="English">English</option>
                   <option value="Hindi">Hindi</option>
@@ -374,7 +374,7 @@ export default function VoiceRemindersPage() {
                   <option value="Spanish">Spanish</option>
                   <option value="French">French</option>
                 </select>
-                <p className="text-[10px] text-slate-800 leading-normal">Updates target speech synthesis voice.</p>
+                <p className="text-[10px] text-slate-700 dark:text-dark-text-muted leading-normal">Updates target speech synthesis voice.</p>
               </div>
 
               {/* Test button */}
@@ -383,32 +383,32 @@ export default function VoiceRemindersPage() {
                   suppressHydrationWarning
                   onClick={playGeneralTest}
                   disabled={isPlaying !== null}
-                  className="w-full py-2.5 px-4 border border-slate-300 text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                  className="w-full py-2.5 px-4 border border-slate-300 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-white bg-slate-55 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                 >
-                  <Volume2 className="h-4 w-4 text-teal-700" />
+                  <Volume2 className="h-4 w-4 text-teal-700 dark:text-teal-400" />
                   <span>Test Female Voice</span>
                 </button>
               </div>
             </div>
 
             {/* Live Preview Panel */}
-            <div className="mt-6 border-t border-slate-100 pt-5 space-y-4">
-              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Live Synthesizer Preview</h3>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+            <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-5 space-y-4">
+              <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Live Synthesizer Preview</h3>
+              <div className="bg-slate-55 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="font-bold text-slate-800">Selected Language:</span>
-                    <span className="font-black text-slate-900 capitalize">{activeProfile.language || "English"}</span>
+                    <span className="font-bold text-slate-805 dark:text-dark-text-secondary">Selected Language:</span>
+                    <span className="font-black text-slate-900 dark:text-white capitalize">{activeProfile.language || "English"}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="font-bold text-slate-800">Detected Browser Voice:</span>
-                    <span className="font-black text-teal-700 truncate max-w-[200px]" title={detectedVoiceName}>
+                    <span className="font-bold text-slate-855 dark:text-dark-text-secondary">Detected Browser Voice:</span>
+                    <span className="font-black text-teal-700 dark:text-teal-400 truncate max-w-[200px]" title={detectedVoiceName}>
                       {detectedVoiceName}
                     </span>
                   </div>
                 </div>
-                <div className="bg-white border border-slate-200 p-3 rounded-lg text-[11px] text-slate-800 italic leading-relaxed space-y-1">
-                  <span className="block text-[9px] font-bold text-slate-800 uppercase not-italic">Reminder Text Preview</span>
+                <div className="bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-slate-850 p-3 rounded-lg text-[11px] text-slate-800 dark:text-slate-250 italic leading-relaxed space-y-1">
+                  <span className="block text-[9px] font-bold text-slate-805 dark:text-dark-text-secondary uppercase not-italic">Reminder Text Preview</span>
                   <p>"{previewText}"</p>
                 </div>
               </div>
@@ -416,33 +416,33 @@ export default function VoiceRemindersPage() {
           </div>
 
           {/* Today's Schedule Announcers */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
-              <Clock className="h-5 w-5 text-teal-700" />
+          <div className="bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <Clock className="h-5 w-5 text-teal-700 dark:text-teal-400" />
               Medication Announcement Deck
             </h2>
 
             {todayDoses.length === 0 ? (
-              <div className="text-center py-10 text-slate-800 italic text-xs">
+              <div className="text-center py-10 text-slate-800 dark:text-slate-300 italic text-xs">
                 No medications configured on the current schedule for {activeProfile.name}.
               </div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {todayDoses.map((dose) => {
                   const uniqKey = dose.reminderTimeId;
                   const isCurrentPlaying = isPlaying === uniqKey;
                   return (
-                    <div key={uniqKey} className="py-4 flex items-center justify-between gap-4 first:pt-0 last:pb-0 hover:bg-slate-50/50 rounded-lg transition-colors px-1">
+                    <div key={uniqKey} className="py-4 flex items-center justify-between gap-4 first:pt-0 last:pb-0 hover:bg-slate-55/50 dark:hover:bg-slate-900/40 rounded-lg transition-colors px-1">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 border border-teal-100">
+                        <div className="w-10 h-10 rounded-lg bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 flex items-center justify-center shrink-0 border border-teal-100 dark:border-teal-900/50">
                           <Pill className="h-5 w-5" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-slate-900">{dose.name}</h4>
-                          <p className="text-xs text-slate-800 font-medium capitalize">
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-white">{dose.name}</h4>
+                          <p className="text-xs text-slate-805 dark:text-slate-300 font-medium capitalize">
                             {dose.timeSlot} Routine • {dose.dosage} at {formatTime12h(dose.exactTime)}
                           </p>
-                          {dose.notes && <p className="text-[10px] text-slate-800 italic mt-0.5">★ Direction: {dose.notes}</p>}
+                          {dose.notes && <p className="text-[10px] text-slate-700 dark:text-slate-400 italic mt-0.5">★ Direction: {dose.notes}</p>}
                         </div>
                       </div>
 
@@ -454,7 +454,7 @@ export default function VoiceRemindersPage() {
                           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 border ${
                             isCurrentPlaying
                               ? "bg-teal-650 text-white border-teal-655 shadow-xs animate-pulse"
-                              : "bg-teal-55 text-teal-700 hover:bg-teal-100 border-teal-200"
+                              : "bg-teal-55 dark:bg-teal-950/40 text-teal-700 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/55 border-teal-200 dark:border-teal-900"
                           }`}
                         >
                           <Volume2 className="h-3.5 w-3.5" />
@@ -479,7 +479,7 @@ export default function VoiceRemindersPage() {
             </div>
             <div className="space-y-1">
               <h3 className="text-base font-bold text-white">Manual Alert Simulator</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed">
                 Manually trigger a local popup alert to preview how the care engine speaks details out loud in real time.
               </p>
             </div>
@@ -488,19 +488,19 @@ export default function VoiceRemindersPage() {
               <button
                 suppressHydrationWarning
                 onClick={triggerSimulation}
-                className="w-full py-3 px-4 text-xs font-bold text-slate-950 bg-teal-400 hover:bg-teal-350 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-550/10 hover:scale-[1.02]"
+                className="w-full py-3 px-4 text-xs font-bold text-slate-955 bg-teal-400 hover:bg-teal-350 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-md shadow-teal-550/10 hover:scale-[1.02]"
               >
-                <BellRing className="h-4 w-4 text-slate-950 animate-bounce" />
+                <BellRing className="h-4 w-4 text-slate-955 animate-bounce" />
                 <span>Trigger Manual Simulation</span>
               </button>
             </div>
 
-            <div className="flex items-center justify-between border-t border-slate-800 pt-4 text-xs text-slate-400">
+            <div className="flex items-center justify-between border-t border-slate-800 pt-4 text-xs text-slate-300">
               <span>Speech Voice Output</span>
               <button 
                 suppressHydrationWarning
                 onClick={() => setIsAudioMuted(!isAudioMuted)} 
-                className="text-teal-700 hover:text-teal-900 font-bold hover:underline"
+                className="text-teal-400 hover:text-teal-300 font-bold hover:underline"
               >
                 {isAudioMuted ? "Unmute Spoken Cues" : "Mute Spoken Cues"}
               </button>
@@ -509,31 +509,31 @@ export default function VoiceRemindersPage() {
 
           {/* Active notification card */}
           {isAlertVisible && activeAlert && (
-            <div className="bg-white border-2 border-red-500 rounded-2xl p-6 shadow-xl space-y-4 animate-bounce relative overflow-hidden">
+            <div className="bg-white dark:bg-dark-bg-card border-2 border-red-500 rounded-2xl p-6 shadow-xl space-y-4 animate-bounce relative overflow-hidden">
               <div className="absolute top-0 right-0 w-2 h-full bg-red-500"></div>
               
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-red-50 text-red-650 flex items-center justify-center shrink-0 border border-red-100">
+                <div className="w-10 h-10 rounded-full bg-red-50 text-red-655 dark:bg-red-955/20 dark:text-red-400 flex items-center justify-center shrink-0 border border-red-100 dark:border-red-900/50">
                   <BellRing className="h-5 w-5 text-red-500 animate-pulse" />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] bg-red-100 text-red-800 font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wide">
+                  <span className="text-[10px] bg-red-100 dark:bg-red-950/40 text-red-800 dark:text-red-400 font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wide">
                     REMINDER DUE NOW
                   </span>
                   
-                  <h4 className="text-sm font-bold text-slate-900 pt-2">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white pt-2">
                     {activeProfile.name}, your medication is due now.
                   </h4>
                   
-                  <div className="bg-slate-55 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-900 mt-2 space-y-1">
-                    <p>💊 <strong className="text-slate-950">{activeAlert.name}</strong> • {activeAlert.dosage}</p>
+                  <div className="bg-slate-55 dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-slate-200 mt-2 space-y-1">
+                    <p>💊 <strong className="text-slate-950 dark:text-white">{activeAlert.name}</strong> • {activeAlert.dosage}</p>
                     <p>🕒 Scheduled Slot: <span className="capitalize font-bold">{activeAlert.timeSlot} routine</span> ({formatTime12h(activeAlert.exactTime)})</p>
-                    {activeAlert.notes && <p className="italic text-slate-700 text-[10px] pt-1">★ Note: {activeAlert.notes}</p>}
+                    {activeAlert.notes && <p className="italic text-slate-700 dark:text-slate-400 text-[10px] pt-1">★ Note: {activeAlert.notes}</p>}
                   </div>
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-2 border-t border-slate-100">
+              <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <button
                   suppressHydrationWarning
                   onClick={handleAlertTaken}
@@ -545,7 +545,7 @@ export default function VoiceRemindersPage() {
                 <button
                   suppressHydrationWarning
                   onClick={() => setIsAlertVisible(false)}
-                  className="py-2 px-3 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
+                  className="py-2 px-3 text-xs font-bold text-slate-700 dark:text-white bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors border border-slate-200 dark:border-slate-800"
                 >
                   Snooze
                 </button>
@@ -554,8 +554,8 @@ export default function VoiceRemindersPage() {
           )}
 
           {/* Guide box */}
-          <div className="bg-teal-50 border border-teal-150 rounded-2xl p-4 flex gap-3 text-teal-950">
-            <HelpCircle className="h-5 w-5 text-teal-600 shrink-0 mt-0.5" />
+          <div className="bg-teal-50 dark:bg-teal-950/20 border border-teal-150 dark:border-teal-900/50 rounded-2xl p-4 flex gap-3 text-teal-950 dark:text-teal-200">
+            <HelpCircle className="h-5 w-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
             <div className="text-xs space-y-1">
               <h4 className="font-bold">Presentation Tip</h4>
               <p className="leading-relaxed">

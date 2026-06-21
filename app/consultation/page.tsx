@@ -221,32 +221,30 @@ Patient: Sure doctor. Thank you.`;
       return "bg-amber-50 text-amber-800 border-amber-200";
     }
     return "bg-emerald-50 text-emerald-800 border-emerald-200";
-  };
-
-  return (
+  };  return (
     <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full space-y-6 animate-fade-in">
       
       {/* Back button & Patient Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div className="space-y-1">
-          <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-teal-700 hover:text-teal-800 transition-colors">
+          <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors">
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Dashboard</span>
           </Link>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-2">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-2">
             Doctor Consultation Summarizer
           </h1>
-          <p className="text-slate-800 text-xs font-bold uppercase tracking-wider">
-            Patient File: <strong className="text-teal-700">{activeProfile.name}</strong> • Age {activeProfile.age} • Primary Caregiver: {activeProfile.caregiverName}
+          <p className="text-slate-850 dark:text-slate-300 text-xs font-black uppercase tracking-wider">
+            Patient File: <strong className="text-teal-850 dark:text-teal-400 font-extrabold">{activeProfile.name}</strong> • Age {activeProfile.age} • Primary Caregiver: {activeProfile.caregiverName}
           </p>
         </div>
 
         <div className="flex gap-2 w-full sm:w-auto">
           <button
             onClick={handleLoadDemo}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 rounded-xl transition-all shadow-2xs"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-extrabold text-teal-900 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-900/50 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-xl transition-all shadow-2xs"
           >
-            <Sparkles className="h-4 w-4 text-teal-605" />
+            <Sparkles className="h-4 w-4 text-teal-600 dark:text-teal-450" />
             <span>Load Demo Consultation</span>
           </button>
         </div>
@@ -257,14 +255,14 @@ Patient: Sure doctor. Thank you.`;
         
         {/* Left Side: Speech Input & Raw Transcript (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-black text-slate-850 flex items-center gap-2">
-                <Mic className="h-4.5 w-4.5 text-teal-700" />
+          <div className="bg-white dark:bg-dark-bg-card border border-slate-205 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-sm font-black text-slate-955 dark:text-white flex items-center gap-2">
+                <Mic className="h-4.5 w-4.5 text-teal-800 dark:text-teal-400" />
                 Live Audio & Voice Intake
               </h3>
               {isRecording && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-100 animate-pulse">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-50 dark:bg-rose-955/20 text-rose-700 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50 animate-pulse">
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                   Recording...
                 </span>
@@ -278,7 +276,7 @@ Patient: Sure doctor. Thank you.`;
                   onClick={handleToggleRecording}
                   className={`py-3 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border ${
                     isRecording 
-                      ? "bg-slate-200 text-slate-850 border-slate-350 hover:bg-slate-250" 
+                      ? "bg-slate-200 dark:bg-slate-800 text-slate-850 dark:text-white border-slate-350 dark:border-slate-700 hover:bg-slate-250 dark:hover:bg-slate-750" 
                       : "bg-teal-600 text-white border-transparent hover:bg-teal-700 shadow-sm"
                   }`}
                 >
@@ -298,25 +296,25 @@ Patient: Sure doctor. Thank you.`;
                 <button
                   onClick={handleStopAndSummarize}
                   disabled={isRecording === false && transcript.trim().length === 0}
-                  className="py-3 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border border-transparent disabled:opacity-40 disabled:pointer-events-none shadow-sm"
+                  className="py-3 px-4 bg-slate-900 dark:bg-slate-950 hover:bg-slate-800 dark:hover:bg-slate-900 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border border-transparent disabled:opacity-40 disabled:pointer-events-none shadow-sm"
                 >
                   <Square className="h-3.5 w-3.5 shrink-0" />
                   <span>Stop & Summarize</span>
                 </button>
               </div>
             ) : (
-              <div className="p-4 bg-amber-50/70 border border-amber-250 rounded-xl text-xs text-amber-900 flex gap-2.5">
-                <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-4 bg-amber-50/80 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-900/50 rounded-xl text-xs text-amber-955 dark:text-amber-300 flex gap-2.5 font-semibold">
+                <AlertTriangle className="h-5 w-5 text-amber-700 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold mb-0.5">Voice recording isn’t supported in this browser — try Chrome</h4>
-                  <p className="leading-relaxed opacity-90">You can still type or paste the consultation text manually below to evaluate the AI summarizer.</p>
+                  <h4 className="font-extrabold mb-0.5">Voice recording isn’t supported in this browser — try Chrome</h4>
+                  <p className="leading-relaxed opacity-100">You can still type or paste the consultation text manually below to evaluate the AI summarizer.</p>
                 </div>
               </div>
             )}
 
             {/* Transcript Textarea */}
             <div className="space-y-1.5">
-              <label htmlFor="transcript-input" className="block text-xs font-bold text-slate-800 uppercase tracking-wide">
+              <label htmlFor="transcript-input" className="block text-xs font-extrabold text-slate-900 dark:text-dark-text-secondary uppercase tracking-wide">
                 Consultation Transcript
               </label>
               <textarea
@@ -328,9 +326,9 @@ Patient: Sure doctor. Thank you.`;
                   setSaveSuccess(false);
                 }}
                 placeholder="Microphone results will appear here as you speak. Or, you can type/paste doctor's consultation notes here..."
-                className="w-full text-sm font-medium text-slate-850 border border-slate-300 rounded-xl p-3.5 bg-slate-50/30 focus:outline-hidden focus:border-teal-500 focus:bg-white transition-all resize-none"
+                className="w-full text-sm font-bold text-slate-900 placeholder-slate-600 border border-slate-300 dark:border-slate-800 rounded-xl p-3.5 bg-slate-50/30 dark:bg-slate-900/50 focus:outline-hidden focus:border-teal-500 focus:bg-white dark:focus:bg-slate-950 transition-all resize-none dark:text-white dark:placeholder-slate-500"
               />
-              <div className="flex justify-between items-center text-[10px] text-slate-800 font-bold">
+              <div className="flex justify-between items-center text-[10px] text-slate-850 dark:text-dark-text-muted font-extrabold">
                 <span>{transcript.trim().length} characters</span>
                 <span>Requires min 10 chars</span>
               </div>
@@ -341,16 +339,16 @@ Patient: Sure doctor. Thank you.`;
               <button
                 onClick={() => handleSummarize(transcript)}
                 disabled={isLoading || transcript.trim().length < 10}
-                className="w-full py-3 text-sm font-bold text-teal-950 bg-teal-100 hover:bg-teal-200 border border-teal-200 rounded-xl transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
+                className="w-full py-3 text-sm font-black text-teal-955 bg-teal-100 hover:bg-teal-200 border border-teal-300 dark:text-teal-300 dark:bg-teal-950/40 dark:hover:bg-teal-900/50 dark:border-teal-800 rounded-xl transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4.5 w-4.5 animate-spin text-teal-800" />
+                    <Loader2 className="h-4.5 w-4.5 animate-spin text-teal-900 dark:text-teal-400" />
                     <span>Analyzing Transcript...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4.5 w-4.5 text-teal-700" />
+                    <Sparkles className="h-4.5 w-4.5 text-teal-900 dark:text-teal-400" />
                     <span>Summarize Transcript</span>
                   </>
                 )}
@@ -358,7 +356,7 @@ Patient: Sure doctor. Thank you.`;
             )}
 
             {apiError && (
-              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 font-semibold leading-relaxed">
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-955/20 dark:border-rose-900/50 text-xs text-rose-800 dark:text-rose-300 font-semibold leading-relaxed">
                 ⚠️ {apiError}
               </div>
             )}
@@ -368,29 +366,29 @@ Patient: Sure doctor. Thank you.`;
         {/* Right Side: AI summary result card (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {isLoading ? (
-            <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-4 shadow-sm animate-pulse">
-              <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-700 flex items-center justify-center mx-auto border border-teal-150 animate-spin">
+            <div className="bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-slate-805 rounded-3xl p-12 text-center space-y-4 shadow-sm animate-pulse">
+              <div className="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 flex items-center justify-center mx-auto border border-teal-150 dark:border-teal-900/50 animate-spin">
                 <Loader2 className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-850">AI Clinical Processor Active</h3>
-                <p className="text-xs text-slate-800 max-w-xs mx-auto mt-1 leading-normal">
+                <h3 className="text-base font-extrabold text-slate-955 dark:text-white">AI Clinical Processor Active</h3>
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold max-w-xs mx-auto mt-1 leading-normal">
                   Gemini 2.5 Flash is extracting diagnoses, medications, safety directions, and caregiver action items...
                 </p>
               </div>
             </div>
           ) : aiSummary ? (
-            <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm space-y-6">
+            <div className="bg-white dark:bg-dark-bg-card border border-slate-205 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm space-y-6">
               
               {/* Card Header */}
-              <div className="bg-gradient-to-r from-teal-700 to-teal-800 text-white p-5 flex justify-between items-center">
+              <div className="bg-gradient-to-r from-teal-700 to-teal-800 dark:from-teal-950/80 dark:to-teal-900/80 text-white p-5 flex justify-between items-center border-b dark:border-slate-800">
                 <div className="flex items-center gap-3">
                   <div className="rounded-xl bg-white/10 p-2.5">
                     <Stethoscope className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-lg font-black leading-tight">AI Clinical Summary</h3>
-                    <p className="text-[10px] text-teal-100 uppercase tracking-wider mt-0.5">CareCompanion Audit Sheet</p>
+                    <p className="text-[10px] text-teal-100 dark:text-teal-200 uppercase tracking-wider mt-0.5">CareCompanion Audit Sheet</p>
                   </div>
                 </div>
 
@@ -404,7 +402,7 @@ Patient: Sure doctor. Thank you.`;
               {/* Card Content */}
               <div className="p-6 space-y-5">
                 {saveSuccess && (
-                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-250 text-xs text-emerald-850 font-bold flex items-center gap-2 animate-bounce">
+                  <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-250 dark:border-emerald-900/50 text-xs text-emerald-850 dark:text-emerald-400 font-bold flex items-center gap-2 animate-bounce">
                     <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
                     <span>Clinical consultation report successfully saved to {activeProfile.name}'s profile!</span>
                   </div>
@@ -412,79 +410,79 @@ Patient: Sure doctor. Thank you.`;
 
                 {/* Primary Diagnosis */}
                 <div className="space-y-1">
-                  <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider">Clinical Diagnosis</span>
-                  <div className="text-sm font-bold text-slate-900 bg-slate-55 border border-slate-200 p-3 rounded-xl">
+                  <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider">Clinical Diagnosis</span>
+                  <div className="text-sm font-extrabold text-slate-955 dark:text-white bg-slate-55 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 p-3 rounded-xl">
                     {aiSummary.diagnosis || "N/A"}
                   </div>
                 </div>
 
                 {/* Medicines Mentioned */}
                 <div className="space-y-1.5">
-                  <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-1">
-                    <Pill className="h-3.5 w-3.5 text-teal-700" />
+                  <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider flex items-center gap-1">
+                    <Pill className="h-3.5 w-3.5 text-teal-800 dark:text-teal-400" />
                     Prescriptions & Medications Mentioned
                   </span>
                   {aiSummary.medicinesMentioned && aiSummary.medicinesMentioned.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {aiSummary.medicinesMentioned.map((med: string, idx: number) => (
-                        <span key={idx} className="inline-flex items-center bg-teal-50/60 border border-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-lg">
+                        <span key={idx} className="inline-flex items-center bg-teal-50/80 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-900/50 text-teal-950 dark:text-teal-300 text-xs font-extrabold px-3 py-1 rounded-lg shadow-3xs">
                           💊 {med}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-800 italic">No specific medications detected in the transcript.</p>
+                    <p className="text-xs text-slate-905 dark:text-slate-300 font-semibold italic">No specific medications detected in the transcript.</p>
                   )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Instructions */}
-                  <div className="space-y-1 bg-slate-55 border border-slate-200 p-4.5 rounded-xl space-y-2">
-                    <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider">Instructions & Guidelines</span>
-                    <p className="text-xs text-slate-850 leading-relaxed whitespace-pre-line font-semibold">
+                  <div className="space-y-1 bg-slate-55 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 p-4.5 rounded-xl space-y-2">
+                    <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider">Instructions & Guidelines</span>
+                    <p className="text-xs text-slate-955 dark:text-slate-205 leading-relaxed whitespace-pre-line font-bold">
                       {aiSummary.instructions || "No direct guidelines provided."}
                     </p>
                   </div>
 
                   {/* Action Items */}
-                  <div className="space-y-2 bg-slate-55 border border-slate-200 p-4.5 rounded-xl">
-                    <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider">Action Items</span>
+                  <div className="space-y-2 bg-slate-55 dark:bg-slate-900/50 border border-slate-300 dark:border-slate-800 p-4.5 rounded-xl">
+                    <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider">Action Items</span>
                     {aiSummary.actionItems && aiSummary.actionItems.length > 0 ? (
                       <ul className="space-y-1.5">
                         {aiSummary.actionItems.map((item: string, idx: number) => (
-                          <li key={idx} className="text-xs text-slate-850 flex items-start gap-1.5 font-semibold leading-relaxed">
-                            <span className="text-teal-600 text-xs select-none shrink-0 mt-0.5">✔</span>
+                          <li key={idx} className="text-xs text-slate-955 dark:text-slate-205 flex items-start gap-1.5 font-bold leading-relaxed">
+                            <span className="text-teal-700 dark:text-teal-400 text-xs select-none shrink-0 mt-0.5">✔</span>
                             <span>{item}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs text-slate-800 italic">No direct action items identified.</p>
+                      <p className="text-xs text-slate-900 dark:text-slate-300 font-semibold italic">No direct action items identified.</p>
                     )}
                   </div>
                 </div>
 
                 {/* Follow up & Summary */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 dark:border-slate-805 pt-4">
                   <div className="space-y-0.5">
-                    <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5 text-slate-750" />
+                    <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider flex items-center gap-1">
+                      <Calendar className="h-3.5 w-3.5 text-slate-800 dark:text-slate-400 animate-pulse" />
                       Follow-Up Timeline
                     </span>
-                    <strong className="text-xs text-slate-900 font-bold block bg-slate-55 px-3 py-2 rounded-lg border border-slate-200 mt-1">
+                    <strong className="text-xs text-slate-955 dark:text-white font-extrabold block bg-slate-55 dark:bg-slate-900/50 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-800 mt-1">
                       📅 {aiSummary.followUpDate || "None"}
                     </strong>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="block text-[10px] font-black text-slate-800 uppercase tracking-wider">Caregiver Summary</span>
-                    <p className="text-xs text-slate-800 leading-relaxed font-semibold mt-1">
+                    <span className="block text-[10px] font-black text-slate-900 dark:text-dark-text-secondary uppercase tracking-wider">Caregiver Summary</span>
+                    <p className="text-xs text-slate-950 dark:text-slate-200 leading-relaxed font-bold mt-1">
                       {aiSummary.summary || "N/A"}
                     </p>
                   </div>
                 </div>
 
                 {/* Save button */}
-                <div className="pt-4 border-t border-slate-100 flex justify-end">
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                   <button
                     onClick={handleSaveToProfile}
                     disabled={saveSuccess}
@@ -497,22 +495,22 @@ Patient: Sure doctor. Thank you.`;
               </div>
             </div>
           ) : (
-            <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-4 shadow-sm">
-              <div className="w-14 h-14 rounded-full bg-slate-50 text-slate-800 flex items-center justify-center mx-auto border border-slate-200">
-                <FileText className="h-6 w-6 text-slate-800" />
+            <div className="bg-white dark:bg-dark-bg-card border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center space-y-4 shadow-sm">
+              <div className="w-14 h-14 rounded-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white flex items-center justify-center mx-auto border border-slate-300 dark:border-slate-700">
+                <FileText className="h-6 w-6 text-slate-950 dark:text-slate-200" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-850">Awaiting Transcript Processing</h3>
-                <p className="text-xs text-slate-800 max-w-xs mx-auto mt-1 leading-normal">
+                <h3 className="text-sm font-black text-slate-955 dark:text-white">Awaiting Transcript Processing</h3>
+                <p className="text-xs text-slate-900 dark:text-slate-300 font-semibold max-w-xs mx-auto mt-1 leading-normal">
                   Transcribe a consultation or load the high-fidelity demo sample to generate an AI summary log.
                 </p>
               </div>
               <div className="pt-2">
                 <button
                   onClick={handleLoadDemo}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 border border-slate-200 text-xs font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 shadow-2xs transition-all"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 border border-slate-300 dark:border-slate-800 text-xs font-extrabold rounded-lg text-slate-900 dark:text-white bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 shadow-2xs transition-all"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+                  <Sparkles className="h-3.5 w-3.5 text-teal-655 dark:text-teal-400" />
                   <span>Use Demo Consultation</span>
                 </button>
               </div>

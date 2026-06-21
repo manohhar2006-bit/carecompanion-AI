@@ -193,13 +193,13 @@ function AddMedicineForm() {
     <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1 w-full animate-fade-in">
       {/* Back button */}
       <div className="mb-6">
-        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-teal-700 hover:text-teal-800 transition-colors">
+        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors">
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Dashboard</span>
         </Link>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
+      <div className="bg-white dark:bg-dark-bg-card rounded-3xl border border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden">
         {/* Form header */}
         <div className="bg-gradient-to-r from-teal-650 to-teal-800 text-white p-6 flex items-center gap-4">
           <div className="rounded-xl bg-white/10 p-3">
@@ -207,7 +207,7 @@ function AddMedicineForm() {
           </div>
           <div>
             <h1 className="text-2xl font-black">{medicineToEdit ? "Edit Patient Medication" : "Log Medication Details"}</h1>
-            <p className="text-xs text-teal-100 mt-0.5">
+            <p className="text-xs text-teal-100 dark:text-teal-200 mt-0.5">
               {medicineToEdit ? `Modify details for ${medicineToEdit.name}` : "Configure daily prescription routines and automatic voices."}
             </p>
           </div>
@@ -215,14 +215,14 @@ function AddMedicineForm() {
 
         <div className="p-6 sm:p-8 space-y-6">
           {error && (
-            <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700 font-semibold">
+            <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-sm text-red-750 dark:text-red-400 font-semibold">
               ⚠️ {error}
             </div>
           )}
 
           {isSuccess && (
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-250 text-sm text-emerald-800 flex items-center gap-2 font-bold animate-pulse">
-              <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
+            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-250 dark:border-emerald-900/30 text-sm text-emerald-800 dark:text-emerald-400 flex items-center gap-2 font-bold animate-pulse">
+              <CheckCircle className="h-5 w-5 text-emerald-650 shrink-0" />
               <span>Medication saved successfully! Returning to Patient Dashboard...</span>
             </div>
           )}
@@ -232,7 +232,7 @@ function AddMedicineForm() {
               
               {/* Medicine Name */}
               <div className="space-y-2">
-                <label htmlFor="med-name" className="block text-sm font-bold text-slate-700">
+                <label htmlFor="med-name" className="block text-sm font-bold text-slate-700 dark:text-dark-text-primary">
                   Medication Name
                 </label>
                 <input
@@ -241,15 +241,15 @@ function AddMedicineForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Amlodipine, Metformin"
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
+                  className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2.5 text-slate-800 dark:text-white placeholder-slate-600 dark:placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                   required
                 />
-                <p className="text-xs text-slate-800">Include brand name or chemical identifier.</p>
+                <p className="text-xs text-slate-700 dark:text-dark-text-secondary">Include brand name or chemical identifier.</p>
               </div>
 
               {/* Dosage */}
               <div className="space-y-2">
-                <label htmlFor="med-dosage" className="block text-sm font-bold text-slate-700">
+                <label htmlFor="med-dosage" className="block text-sm font-bold text-slate-700 dark:text-dark-text-primary">
                   Dosage
                 </label>
                 <input
@@ -258,22 +258,22 @@ function AddMedicineForm() {
                   value={dosage}
                   onChange={(e) => setDosage(e.target.value)}
                   placeholder="e.g. 5mg, 1 tablet, 10ml"
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
+                  className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2.5 text-slate-800 dark:text-white placeholder-slate-600 dark:placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                   required
                 />
-                <p className="text-xs text-slate-800">Specify weight or quantity to take per slot.</p>
+                <p className="text-xs text-slate-700 dark:text-dark-text-secondary">Specify weight or quantity to take per slot.</p>
               </div>
 
               {/* Frequency */}
               <div className="space-y-2">
-                <label htmlFor="med-frequency" className="block text-sm font-bold text-slate-700">
+                <label htmlFor="med-frequency" className="block text-sm font-bold text-slate-700 dark:text-dark-text-primary">
                   Frequency
                 </label>
                 <select
                   id="med-frequency"
                   value={frequency}
                   onChange={(e) => setFrequency(e.target.value)}
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
+                  className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2.5 text-slate-800 dark:text-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                 >
                   <option value="Daily">Daily</option>
                   <option value="Twice Daily">Twice Daily</option>
@@ -281,12 +281,12 @@ function AddMedicineForm() {
                   <option value="Weekly">Weekly</option>
                   <option value="As Needed (PRN)">As Needed (PRN)</option>
                 </select>
-                <p className="text-xs text-slate-800">How regularly this medicine is scheduled.</p>
+                <p className="text-xs text-slate-700 dark:text-dark-text-secondary">How regularly this medicine is scheduled.</p>
               </div>
 
               {/* Duration */}
               <div className="space-y-2">
-                <label htmlFor="med-duration" className="block text-sm font-bold text-slate-700">
+                <label htmlFor="med-duration" className="block text-sm font-bold text-slate-700 dark:text-dark-text-primary">
                   Duration (Days)
                 </label>
                 <input
@@ -295,34 +295,34 @@ function AddMedicineForm() {
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
                   placeholder="e.g. 30, 90"
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
+                  className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2.5 text-slate-800 dark:text-white placeholder-slate-600 dark:placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
                   min="1"
                   required
                 />
-                <p className="text-xs text-slate-800">Total days before prescription refilling.</p>
+                <p className="text-xs text-slate-700 dark:text-dark-text-secondary">Total days before prescription refilling.</p>
               </div>
             </div>
 
             {/* Advanced Multi-Time Scheduling Subform */}
-            <div className="border border-slate-200 rounded-2xl p-6 bg-slate-50/50 space-y-6">
+            <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-6 bg-slate-50/50 dark:bg-dark-bg-secondary space-y-6">
               <div>
-                <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                  <Clock className="h-5.5 w-5.5 text-teal-650" />
+                <h3 className="text-sm font-bold text-slate-800 dark:text-dark-text-primary flex items-center gap-1.5">
+                  <Clock className="h-5.5 w-5.5 text-teal-650 dark:text-teal-400" />
                   Configure Scheduled Reminder Times
                 </h3>
-                <p className="text-[11px] text-slate-800 mt-0.5">
+                <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary mt-0.5">
                   Add multiple routine slots with their exact trigger times. Voice cues announce at these moments.
                 </p>
               </div>
 
               {/* Input row */}
-              <div className="flex flex-col sm:flex-row gap-4 items-end bg-white border border-slate-250 p-4 rounded-xl shadow-2xs">
+              <div className="flex flex-col sm:flex-row gap-4 items-end bg-white dark:bg-dark-bg-card border border-slate-250 dark:border-slate-700 p-4 rounded-xl shadow-2xs">
                 <div className="flex-1 space-y-1.5 w-full">
-                  <label className="block text-xs font-bold text-slate-800 uppercase">Routine Slot</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-dark-text-muted uppercase">Routine Slot</label>
                   <select
                     value={slotInput}
                     onChange={(e) => handleSlotChange(e.target.value as any)}
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-800 focus:outline-hidden text-sm"
+                    className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden text-sm"
                   >
                     <option value="morning">Morning (Breakfast)</option>
                     <option value="afternoon">Afternoon (Lunch)</option>
@@ -332,12 +332,12 @@ function AddMedicineForm() {
                 </div>
                 
                 <div className="flex-1 space-y-1.5 w-full">
-                  <label className="block text-xs font-bold text-slate-800 uppercase">Exact Reminder Time</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-dark-text-muted uppercase">Exact Reminder Time</label>
                   <input
                     type="time"
                     value={timeInput}
                     onChange={(e) => setTimeInput(e.target.value)}
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-slate-800 focus:outline-hidden text-sm"
+                    className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-1.5 text-slate-800 dark:text-white focus:outline-hidden text-sm"
                     required
                   />
                 </div>
@@ -345,7 +345,7 @@ function AddMedicineForm() {
                 <button
                   type="button"
                   onClick={handleSaveReminderTime}
-                  className="w-full sm:w-auto py-2 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg flex items-center justify-center gap-1 shadow-xs transition-colors shrink-0"
+                  className="w-full sm:w-auto py-2 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg flex items-center justify-center gap-1 shadow-xs transition-colors shrink-0 cursor-pointer"
                 >
                   <Plus className="h-4 w-4" />
                   <span>{editingReminderId ? "Update Scheduled Time" : "Add Reminder Time"}</span>
@@ -354,18 +354,18 @@ function AddMedicineForm() {
 
               {/* Added times list */}
               <div className="space-y-2">
-                <span className="block text-xs font-bold text-slate-800 uppercase tracking-wider">Active Reminder Schedule</span>
+                <span className="block text-xs font-bold text-slate-800 dark:text-dark-text-primary uppercase tracking-wider">Active Reminder Schedule</span>
                 {reminderTimesList.length === 0 ? (
-                  <p className="text-xs text-slate-800 italic py-2">No reminder times added yet. Add at least one schedule above.</p>
+                  <p className="text-xs text-slate-700 dark:text-dark-text-secondary italic py-2">No reminder times added yet. Add at least one schedule above.</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {reminderTimesList.map(item => (
-                      <div key={item.id} className="bg-white border border-slate-200/80 rounded-xl p-3 flex items-center justify-between shadow-2xs">
+                      <div key={item.id} className="bg-white dark:bg-dark-bg-card border border-slate-200/80 dark:border-slate-700 rounded-xl p-3 flex items-center justify-between shadow-2xs">
                         <div className="space-y-0.5">
-                          <span className="text-[10px] font-black text-teal-700 uppercase bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-md tracking-wider">
+                          <span className="text-[10px] font-black text-teal-700 dark:text-teal-400 uppercase bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 px-2 py-0.5 rounded-md tracking-wider">
                             {item.timeSlot}
                           </span>
-                          <strong className="text-sm text-slate-800 block pt-1">
+                          <strong className="text-sm text-slate-800 dark:text-dark-text-primary block pt-1">
                             {formatTime12h(item.time)}
                           </strong>
                         </div>
@@ -373,7 +373,7 @@ function AddMedicineForm() {
                           <button
                             type="button"
                             onClick={() => handleEditReminderTime(item)}
-                            className="p-1 text-slate-600 hover:text-teal-650 hover:bg-teal-50 rounded-lg transition-colors"
+                            className="p-1 text-slate-700 dark:text-dark-text-secondary hover:text-teal-650 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/20 rounded-lg transition-colors cursor-pointer"
                             title="Edit schedule time"
                           >
                             <Edit2 className="h-3.5 w-3.5" />
@@ -381,7 +381,7 @@ function AddMedicineForm() {
                           <button
                             type="button"
                             onClick={() => handleDeleteReminderTime(item.id)}
-                            className="p-1 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1 text-slate-700 dark:text-dark-text-secondary hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors cursor-pointer"
                             title="Delete schedule time"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -396,8 +396,8 @@ function AddMedicineForm() {
 
             {/* Special Instructions/Notes */}
             <div className="space-y-2 pt-2">
-              <label htmlFor="med-notes" className="block text-sm font-bold text-slate-700 flex items-center gap-1.5">
-                <ClipboardList className="h-4 w-4 text-teal-600" />
+              <label htmlFor="med-notes" className="block text-sm font-bold text-slate-700 dark:text-dark-text-primary flex items-center gap-1.5">
+                <ClipboardList className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                 Clinical Notes / Special Instructions
               </label>
               <input
@@ -406,23 +406,23 @@ function AddMedicineForm() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Take with water, avoid dairy, take 30 mins before breakfast"
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
+                className="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg-secondary px-3 py-2.5 text-slate-800 dark:text-white placeholder-slate-600 dark:placeholder-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-hidden text-base"
               />
-              <p className="text-xs text-slate-800">Add dietary guidelines, precautions, or warnings.</p>
+              <p className="text-xs text-slate-700 dark:text-dark-text-secondary">Add dietary guidelines, precautions, or warnings.</p>
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-4 pt-6 border-t border-slate-100">
+            <div className="flex gap-4 pt-6 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="submit"
                 disabled={isSuccess}
-                className="flex-1 py-3.5 px-6 text-base font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-center"
+                className="flex-1 py-3.5 px-6 text-base font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-center cursor-pointer"
               >
                 {medicineToEdit ? "Update Medication Details" : "Save Medication"}
               </button>
               <Link
                 href="/dashboard"
-                className="py-3.5 px-6 border border-slate-200 text-base font-bold text-slate-800 bg-white hover:bg-slate-50 rounded-xl transition-all text-center"
+                className="py-3.5 px-6 border border-slate-200 dark:border-slate-700 text-base font-bold text-slate-800 dark:text-dark-text-secondary bg-white dark:bg-dark-bg-secondary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated rounded-xl transition-all text-center cursor-pointer"
               >
                 Cancel
               </Link>

@@ -103,7 +103,7 @@ export default function ProfilePage() {
             Access Gate
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Patient Accounts Portal</h1>
-          <p className="text-teal-100 text-sm max-w-xl leading-relaxed">
+          <p className="text-teal-50 text-sm max-w-xl leading-relaxed">
             Select an active patient to view their daily adherence schedule, trigger reminders, and generate clinical reports, or register a new patient file.
           </p>
         </div>
@@ -113,12 +113,12 @@ export default function ProfilePage() {
         
         {/* Left Side: Select Profile (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <UserCheck className="h-5.5 w-5.5 text-teal-600" />
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <h2 className="text-lg font-bold text-slate-850 dark:text-dark-text-primary flex items-center gap-2">
+              <UserCheck className="h-5.5 w-5.5 text-teal-600 dark:text-teal-400" />
               Select Active Account
             </h2>
-            <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">{profiles.length} Accounts Registered</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-dark-text-secondary uppercase tracking-wider">{profiles.length} Accounts Registered</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -129,46 +129,46 @@ export default function ProfilePage() {
                   key={profile.id}
                   className={`group rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-md relative ${
                     isActive 
-                      ? "border-teal-500 bg-teal-50/15 ring-2 ring-teal-500/20" 
-                      : "border-slate-200 bg-white hover:border-slate-350"
+                      ? "border-teal-500 bg-teal-50/15 dark:bg-teal-950/10 ring-2 ring-teal-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-bg-card hover:border-slate-350 dark:hover:border-slate-700"
                   }`}
                 >
                   <div className="p-6 space-y-4">
                     {/* Header */}
                     <div className="flex justify-between items-start gap-4">
                       <div>
-                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-dark-text-primary group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
                           {profile.name}
                         </h3>
-                        <p className="text-xs text-slate-700 mt-0.5">{profile.gender} • Age {profile.age}</p>
+                        <p className="text-xs text-slate-700 dark:text-dark-text-secondary mt-0.5">{profile.gender} • Age {profile.age}</p>
                       </div>
                       <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-md ${
                         isActive 
-                          ? "bg-teal-600 text-white" 
-                          : "bg-slate-100 text-slate-600"
+                          ? "bg-teal-650 dark:bg-teal-600 text-white" 
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-dark-text-secondary"
                       }`}>
                         {isActive ? "Active" : "Select"}
                       </span>
                     </div>
 
                     {/* Stats */}
-                    <div className="border-t border-b border-slate-100 py-3 space-y-2 text-xs text-slate-800">
+                    <div className="border-t border-b border-slate-100 dark:border-slate-800 py-3 space-y-2 text-xs text-slate-800 dark:text-dark-text-secondary">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-800 block">Medical Condition</span>
-                        <strong className="text-slate-900 block text-xs truncate mt-0.5">{profile.condition}</strong>
+                        <span className="text-[10px] uppercase font-bold text-slate-650 dark:text-dark-text-muted block">Medical Condition</span>
+                        <strong className="text-slate-900 dark:text-dark-text-primary block text-xs truncate mt-0.5">{profile.condition}</strong>
                       </div>
                       <div className="flex justify-between gap-4">
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Caregiver</span>
-                          <strong className="text-slate-900 mt-0.5 block">{profile.caregiverName}</strong>
+                          <span className="text-[10px] uppercase font-bold text-slate-650 dark:text-dark-text-muted block">Caregiver</span>
+                          <strong className="text-slate-900 dark:text-dark-text-primary mt-0.5 block">{profile.caregiverName}</strong>
                         </div>
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Language</span>
-                          <strong className="text-slate-900 mt-0.5 block capitalize">{profile.language || "English"}</strong>
+                          <span className="text-[10px] uppercase font-bold text-slate-650 dark:text-dark-text-muted block">Language</span>
+                          <strong className="text-slate-900 dark:text-dark-text-primary mt-0.5 block capitalize">{profile.language || "English"}</strong>
                         </div>
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-slate-800 block">Alert Style</span>
-                          <strong className="text-slate-900 mt-0.5 block capitalize">{profile.reminderStyle}</strong>
+                          <span className="text-[10px] uppercase font-bold text-slate-650 dark:text-dark-text-muted block">Alert Style</span>
+                          <strong className="text-slate-900 dark:text-dark-text-primary mt-0.5 block capitalize">{profile.reminderStyle}</strong>
                         </div>
                       </div>
                     </div>
@@ -178,10 +178,10 @@ export default function ProfilePage() {
                       <button
                         onClick={() => handleSelect(profile.id)}
                         suppressHydrationWarning
-                        className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 ${
+                        className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 cursor-pointer ${
                           isActive 
                             ? "bg-teal-600 text-white hover:bg-teal-700 shadow-xs" 
-                            : "bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700"
+                            : "bg-slate-50 hover:bg-slate-100 dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-elevated border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-dark-text-secondary"
                         }`}
                       >
                         <span>Select Profile</span>
@@ -196,7 +196,7 @@ export default function ProfilePage() {
                             }
                           }}
                           suppressHydrationWarning
-                          className="p-2 text-slate-700 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                          className="p-2 text-slate-700 dark:text-dark-text-secondary hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/30 cursor-pointer"
                           title="Delete Patient Record"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -212,20 +212,20 @@ export default function ProfilePage() {
 
         {/* Right Side: Create Profile Form (5 cols) */}
         <div className="lg:col-span-5">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="bg-slate-50 border-b border-slate-200 p-6 flex items-center gap-2.5">
+          <div className="bg-white dark:bg-dark-bg-card rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div className="bg-slate-50 dark:bg-dark-bg-secondary border-b border-slate-200 dark:border-slate-800 p-6 flex items-center gap-2.5">
               <div className="rounded-lg bg-teal-600 text-white p-2">
                 <UserPlus className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-slate-800">Register New Patient</h2>
-                <p className="text-xs text-slate-800 mt-0.5">Create a distinct record for custom schedule configurations.</p>
+                <h2 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">Register New Patient</h2>
+                <p className="text-xs text-slate-700 dark:text-dark-text-secondary mt-0.5">Create a distinct record for custom schedule configurations.</p>
               </div>
             </div>
 
             <div className="p-6">
               {error && (
-                <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 font-bold">
+                <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs text-red-700 dark:text-red-400 font-bold">
                   ⚠️ {error}
                 </div>
               )}
@@ -233,7 +233,7 @@ export default function ProfilePage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Full Name */}
                 <div className="space-y-1">
-                  <label htmlFor="fullname" className="block text-[10px] font-bold text-slate-805 uppercase">
+                  <label htmlFor="fullname" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                     Full Name
                   </label>
                   <input
@@ -243,7 +243,7 @@ export default function ProfilePage() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Mrs. Kamla, Mr. Ramesh"
                     suppressHydrationWarning
-                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                     required
                   />
                 </div>
@@ -251,7 +251,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Age */}
                   <div className="space-y-1">
-                    <label htmlFor="age" className="block text-[10px] font-bold text-slate-805 uppercase">
+                    <label htmlFor="age" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                       Age
                     </label>
                     <input
@@ -261,14 +261,14 @@ export default function ProfilePage() {
                       onChange={(e) => setAge(e.target.value)}
                       placeholder="e.g. 72"
                       suppressHydrationWarning
-                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                      className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                       required
                     />
                   </div>
 
                   {/* Gender */}
                   <div className="space-y-1">
-                    <label htmlFor="gender" className="block text-[10px] font-bold text-slate-805 uppercase">
+                    <label htmlFor="gender" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                       Gender
                     </label>
                     <select
@@ -276,7 +276,7 @@ export default function ProfilePage() {
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
                       suppressHydrationWarning
-                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                      className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -287,7 +287,7 @@ export default function ProfilePage() {
 
                 {/* Medical Condition */}
                 <div className="space-y-1">
-                  <label htmlFor="condition" className="block text-[10px] font-bold text-slate-805 uppercase">
+                  <label htmlFor="condition" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                     Medical Condition / Notes
                   </label>
                   <input
@@ -297,14 +297,14 @@ export default function ProfilePage() {
                     onChange={(e) => setCondition(e.target.value)}
                     placeholder="e.g. Blood Pressure, Diabetes, Post-op Recovery"
                     suppressHydrationWarning
-                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                     required
                   />
                 </div>
 
                 {/* Caregiver Name */}
                 <div className="space-y-1">
-                  <label htmlFor="caregiver" className="block text-[10px] font-bold text-slate-805 uppercase">
+                  <label htmlFor="caregiver" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                     Caregiver Name (Optional)
                   </label>
                   <input
@@ -314,14 +314,14 @@ export default function ProfilePage() {
                     onChange={(e) => setCaregiverName(e.target.value)}
                     placeholder="e.g. Anil, Priya"
                     suppressHydrationWarning
-                    className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                    className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Language */}
                   <div className="space-y-1">
-                    <label htmlFor="language" className="block text-[10px] font-bold text-slate-805 uppercase">
+                    <label htmlFor="language" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                       Reminder Language
                     </label>
                     <select
@@ -329,7 +329,7 @@ export default function ProfilePage() {
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
                       suppressHydrationWarning
-                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden focus:border-teal-500 text-base"
+                      className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                     >
                       <option value="English">English</option>
                       <option value="Hindi">Hindi</option>
@@ -346,7 +346,7 @@ export default function ProfilePage() {
 
                   {/* Reminder Style */}
                   <div className="space-y-1">
-                    <label htmlFor="rem-style" className="block text-[10px] font-bold text-slate-805 uppercase">
+                    <label htmlFor="rem-style" className="block text-[10px] font-bold text-slate-700 dark:text-dark-text-muted uppercase">
                       Reminder Style
                     </label>
                     <select
@@ -354,7 +354,7 @@ export default function ProfilePage() {
                       value={reminderStyle}
                       onChange={(e) => setReminderStyle(e.target.value as any)}
                       suppressHydrationWarning
-                      className="w-full text-xs font-semibold text-slate-800 border border-slate-300 rounded-lg p-2.5 bg-white focus:outline-hidden"
+                      className="w-full text-xs font-semibold text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-dark-bg-secondary focus:outline-hidden focus:border-teal-500"
                     >
                       <option value="both">Both (Voice & Popup)</option>
                       <option value="voice">Voice Reminder Only</option>
@@ -366,7 +366,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   suppressHydrationWarning
-                  className="w-full py-3 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-sm hover:shadow-md transition-all text-center flex items-center justify-center gap-1.5"
+                  className="w-full py-3 px-4 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-sm hover:shadow-md transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <UserPlus className="h-4 w-4" />
                   <span>Register Patient Account</span>

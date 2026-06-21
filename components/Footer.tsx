@@ -31,7 +31,7 @@ export default function Footer() {
     }
   };
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-slate-900 text-slate-300 print:hidden">
+    <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-900 dark:bg-dark-bg-secondary text-slate-300 print:hidden">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Contact details */}
@@ -44,10 +44,10 @@ export default function Footer() {
                 Care<span className="text-teal-400">Companion</span> AI
               </span>
             </Link>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-300">
               Providing medical compliance solutions and family monitoring frameworks to support dignified aging.
             </p>
-            <div className="text-xs text-slate-400 space-y-1">
+            <div className="text-xs text-slate-300 space-y-1">
               <p>📍 Metro Health Parkway, Suite 400</p>
               <p>📞 Adherence Helpline: 1-800-555-0199</p>
               <p>✉️ clinic-support@carecompanion.ai</p>
@@ -60,7 +60,7 @@ export default function Footer() {
               {isInternalRoute ? "Patient Workspace" : "Platform Links"}
             </h3>
             {isInternalRoute ? (
-              <ul className="mt-4 space-y-2 text-sm text-slate-400">
+              <ul className="mt-4 space-y-2 text-sm text-slate-300">
                 <li>
                   <Link href="/dashboard" className="hover:text-teal-400 transition-colors">
                     Daily Schedule
@@ -83,7 +83,7 @@ export default function Footer() {
                 </li>
               </ul>
             ) : (
-              <ul className="mt-4 space-y-2 text-sm text-slate-400">
+              <ul className="mt-4 space-y-2 text-sm text-slate-300">
                 <li>
                   <Link href="/#hero" onClick={(e) => handleAnchorClick(e, "/#hero")} className="hover:text-teal-400 transition-colors">
                     Home Overview
@@ -114,7 +114,7 @@ export default function Footer() {
               {isInternalRoute ? "Portals & Summary" : "Get Started"}
             </h3>
             {isInternalRoute ? (
-              <ul className="mt-4 space-y-2 text-sm text-slate-400">
+              <ul className="mt-4 space-y-2 text-sm text-slate-300">
                 <li>
                   <Link href="/caregiver" className="hover:text-teal-400 transition-colors">
                     Caregiver Monitoring Panel
@@ -137,7 +137,7 @@ export default function Footer() {
                 </li>
               </ul>
             ) : (
-              <ul className="mt-4 space-y-2 text-sm text-slate-400">
+              <ul className="mt-4 space-y-2 text-sm text-slate-300">
                 <li>
                   <Link href="/patients" className="hover:text-teal-400 transition-colors">
                     Register New Account
@@ -165,14 +165,14 @@ export default function Footer() {
                 <Shield className="h-5 w-5 text-teal-400 shrink-0" />
                 <div>
                   <h4 className="text-xs font-bold text-white">HIPAA Secure</h4>
-                  <p className="text-[10px] text-slate-400">256-bit Health Data Encryption</p>
+                  <p className="text-[10px] text-slate-300">256-bit Health Data Encryption</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 bg-slate-800 p-2.5 rounded-lg border border-slate-700">
                 <Landmark className="h-5 w-5 text-teal-400 shrink-0" />
                 <div>
                   <h4 className="text-xs font-bold text-white">FDA Classification</h4>
-                  <p className="text-[10px] text-slate-400">Class I MDDS - Wellness Tool</p>
+                  <p className="text-[10px] text-slate-300">Class I MDDS - Wellness Tool</p>
                 </div>
               </div>
             </div>
@@ -180,10 +180,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t border-slate-800 pt-8 space-y-4">
-          <p className="text-[11px] text-slate-400 leading-relaxed">
+          <p className="text-[11px] text-slate-300 leading-relaxed">
             <strong>Disclaimer:</strong> CareCompanion AI is an interactive wellness tool and does not provide professional medical advice, diagnosis, or treatment. Always consult a physician for health concerns.
           </p>
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 pt-4 border-t border-slate-800/40">
+          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-slate-300 pt-4 border-t border-slate-800/40">
             <p>© {new Date().getFullYear()} CareCompanion AI Clinic Portal. All rights reserved.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a href="#" className="hover:underline">Privacy Policy</a>

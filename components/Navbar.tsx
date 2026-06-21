@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppState } from "@/context/AppContext";
-import { HeartPulse, Menu, X, User } from "lucide-react";
+import { HeartPulse, Menu, X, User, Sun, Moon } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
-  const { activeProfile } = useAppState();
+  const { activeProfile, theme, toggleTheme } = useAppState();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -98,18 +98,18 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white/80 backdrop-blur-lg shadow-2xs print:hidden">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-dark-bg-primary/80 backdrop-blur-lg shadow-2xs print:hidden transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           
           {/* Logo & Brand & Active Patient Badge */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="rounded-lg bg-teal-50 p-1.5 text-teal-600 transition-colors group-hover:bg-teal-100">
+              <div className="rounded-lg bg-teal-50 dark:bg-teal-950/40 p-1.5 text-teal-600 dark:text-teal-400 transition-colors group-hover:bg-teal-100 dark:group-hover:bg-teal-900/40">
                 <HeartPulse className="h-6 w-6" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-slate-800">
-                Care<span className="text-teal-600">Companion</span> AI
+              <span className="text-xl font-bold tracking-tight text-slate-800 dark:text-dark-text-primary">
+                Care<span className="text-teal-600 dark:text-teal-400">Companion</span> AI
               </span>
             </Link>
 
@@ -118,7 +118,7 @@ export default function Navbar() {
               activeProfile ? (
                 <Link 
                   href="/patients" 
-                  className="hidden md:flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-255 border-emerald-100 py-1 px-2.5 rounded-full text-xs font-bold transition-all hover:bg-emerald-100"
+                  className="hidden md:flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40 py-1 px-2.5 rounded-full text-xs font-bold transition-all hover:bg-emerald-100 dark:hover:bg-emerald-900/60"
                 >
                   <User className="h-3.5 w-3.5" />
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -127,7 +127,7 @@ export default function Navbar() {
               ) : (
                 <Link 
                   href="/patients" 
-                  className="hidden md:flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-100 py-1 px-2.5 rounded-full text-xs font-bold transition-all hover:bg-amber-100"
+                  className="hidden md:flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-450 border border-amber-100 dark:border-amber-900/40 py-1 px-2.5 rounded-full text-xs font-bold transition-all hover:bg-amber-100 dark:hover:bg-amber-900/60"
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
                   <span>Select Patient</span>
@@ -145,8 +145,8 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, item.href)}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
                   isLinkActive(item)
-                    ? "bg-teal-50 text-teal-700 shadow-2xs font-semibold"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-teal-600"
+                    ? "bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-455 shadow-2xs font-semibold"
+                    : "text-slate-800 dark:text-dark-text-secondary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated hover:text-teal-600 dark:hover:text-teal-400"
                 }`}
               >
                 {item.name}
@@ -154,19 +154,29 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right Section Button */}
-          <div className="hidden xl:flex items-center">
+          {/* Right Section Button + Theme Toggle */}
+          <div className="hidden xl:flex items-center gap-3">
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-slate-800 dark:text-dark-text-primary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated border border-slate-200 dark:border-slate-705 transition-all cursor-pointer flex items-center justify-center"
+                title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+              >
+                {theme === "light" ? <Moon className="h-4.5 w-4.5" /> : <Sun className="h-4.5 w-4.5" />}
+              </button>
+            )}
+
             {isInternalRoute ? (
               <Link
                 href="/"
-                className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full transition-all duration-200"
+                className="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-slate-700 dark:text-dark-text-primary hover:text-slate-905 dark:hover:text-white bg-slate-50 dark:bg-dark-bg-secondary hover:bg-slate-100 dark:hover:bg-dark-bg-elevated border border-slate-200 dark:border-slate-700 rounded-full transition-all duration-200"
               >
                 Exit App
               </Link>
             ) : (
               <Link
                 href="/patients"
-                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-full shadow-xs hover:shadow-md transition-all duration-200"
+                className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white bg-teal-600 dark:bg-teal-550 hover:bg-teal-700 dark:hover:bg-teal-500 rounded-full shadow-xs hover:shadow-md transition-all duration-200"
               >
                 Get Started
               </Link>
@@ -174,11 +184,20 @@ export default function Navbar() {
           </div>
 
           {/* Mobile hamburger button */}
-          <div className="flex xl:hidden">
+          <div className="flex xl:hidden gap-2 items-center">
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-slate-800 dark:text-dark-text-primary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center"
+                title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+              >
+                {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </button>
+            )}
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900 focus:outline-hidden"
+              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 dark:text-dark-text-secondary hover:bg-slate-100 dark:hover:bg-dark-bg-elevated hover:text-slate-900 dark:hover:text-white focus:outline-hidden"
               aria-controls="mobile-menu"
               aria-expanded="false"
             >
@@ -191,12 +210,12 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="xl:hidden border-t border-slate-100 bg-white" id="mobile-menu">
+        <div className="xl:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-dark-bg-secondary" id="mobile-menu">
           <div className="space-y-1 px-2 pb-3 pt-2">
             {isInternalRoute && mounted && activeProfile && (
-              <div className="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-md m-2 flex items-center justify-between">
+              <div className="px-3 py-2 text-xs font-bold text-slate-700 dark:text-dark-text-secondary bg-slate-50 dark:bg-dark-bg-card border border-slate-200 dark:border-slate-700 rounded-md m-2 flex items-center justify-between">
                 <span>Current Patient: {activeProfile.name}</span>
-                <Link href="/patients" onClick={() => setIsOpen(false)} className="text-teal-600 hover:underline">Change</Link>
+                <Link href="/patients" onClick={() => setIsOpen(false)} className="text-teal-605 dark:text-teal-400 hover:underline">Change</Link>
               </div>
             )}
             {navItems.map((item) => (
@@ -209,19 +228,19 @@ export default function Navbar() {
                 }}
                 className={`block px-3 py-2.5 rounded-md text-base font-medium ${
                   isLinkActive(item)
-                    ? "bg-teal-50 text-teal-700 font-semibold"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-teal-600"
+                    ? "bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-400 font-semibold"
+                    : "text-slate-800 dark:text-dark-text-secondary hover:bg-slate-50 dark:hover:bg-dark-bg-elevated hover:text-teal-600 dark:hover:text-teal-400"
                 }`}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="mt-4 px-3">
+            <div className="mt-4 px-3 flex flex-col gap-2 pb-2">
               {isInternalRoute ? (
                 <Link
                   href="/"
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center block px-4 py-2.5 text-base font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-md shadow-xs"
+                  className="w-full text-center block px-4 py-2.5 text-base font-bold text-slate-800 dark:text-dark-text-secondary bg-slate-100 dark:bg-dark-bg-card hover:bg-slate-200 dark:hover:bg-dark-bg-elevated border border-slate-200 dark:border-slate-700 rounded-md shadow-xs"
                 >
                   Exit App
                 </Link>
@@ -229,7 +248,7 @@ export default function Navbar() {
                 <Link
                   href="/patients"
                   onClick={() => setIsOpen(false)}
-                  className="w-full text-center block px-4 py-2.5 text-base font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-md shadow-xs"
+                  className="w-full text-center block px-4 py-2.5 text-base font-bold text-white bg-teal-600 dark:bg-teal-555 hover:bg-teal-700 dark:hover:bg-teal-500 rounded-md shadow-xs"
                 >
                   Get Started
                 </Link>
@@ -241,4 +260,3 @@ export default function Navbar() {
     </header>
   );
 }
-
