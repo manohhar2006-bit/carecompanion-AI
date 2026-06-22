@@ -419,20 +419,19 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            
-            {/* Feature 1 */}
+                      {/* Feature 1 */}
             <div className="bg-slate-50 dark:bg-dark-bg-card rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md dark:hover:bg-dark-bg-elevated hover:bg-white hover:scale-[1.02] hover:border-teal-200 dark:hover:border-teal-900/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/30 text-teal-650 dark:text-teal-400 flex items-center justify-center">
                   <FileImage className="h-5 w-5" />
                 </div>
                 <h3 className="text-base font-bold text-slate-800 dark:text-dark-text-primary">AI Prescription Reader</h3>
                 <p className="text-[11px] text-slate-700 dark:text-dark-text-secondary leading-relaxed">
-                  Scan printed paper prescriptions. Simulated AI OCR analyzes text and drafts medicine schedule configurations automatically.
+                  Upload any handwritten or printed prescription photo. Gemini 2.5 Flash Vision AI reads the image and extracts medicine name, dosage, frequency, timing, and duration as structured data automatically.
                 </p>
               </div>
               <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-0.5">
-                Simulated OCR <ArrowUpRight className="h-3 w-3" />
+                Gemini Vision AI <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>
 

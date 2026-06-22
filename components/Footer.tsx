@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HeartPulse, Shield, Landmark, AlertCircle } from "lucide-react";
+import { HeartPulse } from "lucide-react";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -33,7 +33,7 @@ export default function Footer() {
   return (
     <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-900 dark:bg-dark-bg-secondary text-slate-300 print:hidden">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo & Contact details */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
@@ -157,26 +157,6 @@ export default function Footer() {
             )}
           </div>
 
-          {/* Compliance Info */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-100">Security & Compliance</h3>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 bg-slate-800 p-2.5 rounded-lg border border-slate-700">
-                <Shield className="h-5 w-5 text-teal-400 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold text-white">HIPAA Secure</h4>
-                  <p className="text-[10px] text-slate-300">256-bit Health Data Encryption</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 bg-slate-800 p-2.5 rounded-lg border border-slate-700">
-                <Landmark className="h-5 w-5 text-teal-400 shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold text-white">FDA Classification</h4>
-                  <p className="text-[10px] text-slate-300">Class I MDDS - Wellness Tool</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 border-t border-slate-800 pt-8 space-y-4">
