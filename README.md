@@ -40,6 +40,20 @@ CareCompanion AI helps elderly patients and their remote family members stay on 
 
 ---
 
+## Architecture
+
+![CareCompanion AI — System Architecture](architecture_diagram.png)
+
+The system is built around three distinct serverless API routes, each making a separate JSON-schema-constrained call to Google Gemini 2.5 Flash:
+
+- `/api/parse-prescription` — receives the prescription image, calls Gemini Vision, returns structured medicine list
+- `/api/summarize-consultation` — receives the live transcript, calls Gemini, returns structured clinical summary
+- `/api/health-insights` — receives adherence + symptom logs, calls Gemini, returns risk level and recommendation
+
+All three routes run server-side so the Gemini API key is never exposed to the browser. Structured JSON output flows into React Context state, which drives the reminder engine, caregiver dashboard, and doctor report.
+
+---
+
 ## Getting Started
 
 ### 1. Clone the repository
